@@ -73,21 +73,17 @@ import { CommonModule } from '@angular/common';
 })
 export class DashboardvendasComponent implements OnInit {
   searchTerm = '';
-  displayedColumns: string[] = ['id', 'cliente', 'produto', 'valor', 'data', 'status', 'acoes'];
+  displayedColumns: string[] = ['id', 'nome', 'status', 'acoes'];
 
   filters: any = {
-    periodo: '',
-    categoria: '',
-    vendedor: '',
-    status: '',
+    nome: '',
+    status: ''
   };
 
   items: any[] = [
-    { id: 1, cliente: 'João Silva', produto: 'iPhone 13', valor: 'R$ 5.999', data: '2024-01-15', status: 'Ativo' },
-    { id: 2, cliente: 'Maria Santos', produto: 'Notebook Dell', valor: 'R$ 3.500', data: '2024-01-14', status: 'Ativo' },
-    { id: 3, cliente: 'Pedro Costa', produto: 'Camisa Nike', valor: 'R$ 89', data: '2024-01-13', status: 'Pendente' },
-    { id: 4, cliente: 'Ana Oliveira', produto: 'Livro Angular', valor: 'R$ 120', data: '2024-01-12', status: 'Ativo' },
-    { id: 5, cliente: 'Carlos Lima', produto: 'AirPods Pro', valor: 'R$ 2.199', data: '2024-01-11', status: 'Ativo' },
+    { id: 1, nome: 'Item 1', status: 'Ativo' },
+    { id: 2, nome: 'Item 2', status: 'Inativo' },
+    { id: 3, nome: 'Item 3', status: 'Ativo' }
   ];
 
   totalItems = 0;
@@ -99,39 +95,33 @@ export class DashboardvendasComponent implements OnInit {
   }
 
   loadData() {
-    console.log('Carregando dados do dashboard...');
+    console.log('Carregando dados...');
     this.totalItems = this.items.length;
   }
 
   applyFilters() {
     console.log('Aplicando filtros:', this.filters);
-    // Aqui você implementaria a lógica de filtros
   }
 
   clearFilters() {
-    this.filters = {
-      periodo: '',
-      categoria: '',
-      vendedor: '',
-      status: '',
-    };
+    this.filters = {};
     this.searchTerm = '';
     console.log('Filtros limpos');
   }
 
   openCreateDialog() {
-    console.log('Abrindo dialog de criação de transação');
+    console.log('Abrindo dialog de criação');
   }
 
   editItem(item: any) {
-    console.log('Editando transação:', item);
+    console.log('Editando item:', item);
   }
 
   deleteItem(item: any) {
-    console.log('Excluindo transação:', item);
+    console.log('Excluindo item:', item);
   }
 
   viewItem(item: any) {
-    console.log('Visualizando transação:', item);
+    console.log('Visualizando item:', item);
   }
 } 

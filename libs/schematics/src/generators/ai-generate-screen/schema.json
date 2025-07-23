@@ -16,7 +16,8 @@
     "project": {
       "type": "string",
       "description": "Nome do projeto onde a tela será criada",
-      "default": "dashboard"
+      "default": "dashboard",
+      "x-prompt": "Em qual projeto você quer criar a tela?"
     },
     "prompt": {
       "type": "string",
@@ -26,32 +27,92 @@
     "features": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "enum": ["filtros", "tabela", "cards", "graficos", "modal", "formulario", "exportacao", "responsivo", "acoes"]
       },
       "description": "Lista de features da tela (filtros, tabela, modal, etc.)",
+      "x-prompt": "Quais features você quer incluir?",
       "default": ["filtros", "tabela", "acoes"]
     },
-    "columns": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Colunas da tabela"
-    },
-    "filters": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Filtros da tela"
-    },
-    "actions": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Ações disponíveis (editar, excluir, etc.)"
+    "generateDocs": {
+      "type": "boolean",
+      "description": "Gerar documentação automática em markdown",
+      "default": true,
+      "x-prompt": "Gerar documentação automática?"
     }
   },
-  "required": ["name", "prompt"]
+  "required": ["name", "prompt"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "tabela"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Colunas da tabela",
+            "x-prompt": "Quais colunas você quer na tabela?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "filtros"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filtros da tela",
+            "x-prompt": "Quais filtros você quer incluir?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "acoes"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["visualizar", "editar", "excluir", "adicionar", "exportar"]
+            },
+            "description": "Ações disponíveis (editar, excluir, etc.)",
+            "x-prompt": "Quais ações você quer incluir?",
+            "default": ["visualizar", "editar", "excluir"]
+          }
+        }
+      }
+    }
+  ]
 } 

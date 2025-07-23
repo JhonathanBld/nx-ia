@@ -31,7 +31,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatMenuModule,
   ],
   templateUrl: './telasimples.component.html',
-  styleUrls: ['./telasimples.component.scss'],
 })
 export class TelasimplesComponent implements OnInit {
   searchTerm = '';

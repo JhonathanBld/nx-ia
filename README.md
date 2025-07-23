@@ -16,7 +16,8 @@ usando-nx/
 ├── scripts/                # Scripts de análise e geração
 │   ├── analyze-prompt.js   # Análise de complexidade
 │   ├── smart-generator.js  # Execução automática
-│   └── generate-with-ai.js # CLI interativo
+│   ├── generate-with-ai.js # CLI interativo
+│   └── generate-ui.js      # Generator UI simplificado
 ├── docs/                   # Documentação gerada
 │   ├── dashboardvendas-analysis.md
 │   └── telaprodutos-analysis.md
@@ -38,25 +39,39 @@ usando-nx/
 - **Features Avançadas (IA)**: Gráficos, cards, modais, export, responsividade
 - **Templates Dinâmicos**: Geração baseada em features detectadas
 
-### ✅ 3. Scripts de Análise e Geração
+### ✅ 3. Generator UI Inteligente (NOVO)
+- **Validação Condicional**: Campos aparecem apenas quando relevantes
+- **Interface Amigável**: Formulário interativo com prompts claros
+- **Validação Automática**: Remove opções desnecessárias
+- **UX Otimizada**: Menos confusão para o usuário
+
+### ✅ 4. Prompt Detalhado para IA (NOVO)
+- **Especificações Precisas**: Campo para descrição detalhada da tela
+- **Documentação para Copilot**: Arquivo markdown específico para IA
+- **Contexto Enriquecido**: Layout, componentes, dados específicos
+- **Checklist de Implementação**: Instruções claras para desenvolvimento
+
+### ✅ 5. Scripts de Análise e Geração
 - **`analyze-prompt.js`**: Análise de complexidade e geração de MD
 - **`smart-generator.js`**: Execução automática com documentação
 - **`generate-with-ai.js`**: CLI interativo para geração
+- **`generate-ui.js`**: Generator UI simplificado (NOVO)
 
-### ✅ 4. Documentação Automática
+### ✅ 6. Documentação Automática
 - **Análise de Prompts**: Gera relatórios detalhados em Markdown
 - **Recomendações**: Sugere Nx ou IA baseado na complexidade
 - **Comandos**: Fornece comandos prontos para execução
 - **Estatísticas**: Métricas de features detectadas
+- **Documentação Detalhada**: Arquivo específico para Copilot (IA)
 
-### ✅ 5. Features Avançadas (IA)
+### ✅ 7. Features Avançadas (IA)
 - **Cards de Métricas**: Com ícones e indicadores de performance
 - **Gráficos**: Barras, pizza, linha com dados simulados
 - **Filtros Avançados**: Datepicker, selects, chips
 - **Tabelas Dinâmicas**: Com ordenação, paginação e ações
 - **Responsividade**: Layout adaptativo para mobile/desktop
 
-### ✅ 6. Features Básicas (Nx)
+### ✅ 8. Features Básicas (Nx)
 - **CRUD Simples**: Create, Read, Update, Delete
 - **Filtros Básicos**: Input text, select simples
 - **Tabelas Padrão**: Com colunas fixas
@@ -64,7 +79,72 @@ usando-nx/
 
 ## 🛠️ Como Usar
 
-### 🎯 Análise de Prompt e Geração
+### 🎯 **Generator UI (PADRÃO RECOMENDADO)**
+
+O sistema agora usa o **Generator UI do Nx** como padrão para uma experiência mais amigável:
+
+#### 1. **Script Simplificado**
+```bash
+# Abre o Generator UI automaticamente
+node scripts/generate-ui.js
+
+# Ou especificar o tipo
+node scripts/generate-ui.js hybrid  # Híbrido (IA + Nx)
+node scripts/generate-ui.js ai      # Apenas IA
+node scripts/generate-ui.js nx      # Apenas Nx
+```
+
+#### 2. **Generator UI Direto**
+```bash
+# Abre interface gráfica para preenchimento
+npx nx g @usando-nx/schematics:hybrid-generator
+npx nx g @usando-nx/schematics:ai-generate-screen
+npx nx g @usando-nx/schematics:generate-screen
+```
+
+#### 3. **Interface do Generator UI**
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Generator UI                        │
+├─────────────────────────────────────────────────────────┤
+│ Nome da Tela: [________________]                       │
+│                                                        │
+│ Prompt: [________________________________]            │
+│                                                        │
+│ Features: [ ] Filtros  [ ] Tabela  [ ] Gráficos      │
+│           [ ] Cards    [ ] Modal   [ ] Exportação     │
+│                                                        │
+│ Projeto: [dashboard]                                  │
+│                                                        │
+│ [GERAR TELA]  [CANCELAR]                             │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 🎯 **Validação Condicional (NOVO)**
+
+O sistema agora é **inteligente** e só mostra campos relevantes:
+
+#### Exemplo 1: Sem Tabela
+```bash
+# Features selecionadas: cards, graficos
+# Campos que aparecem: ✅ Nome, Prompt, Features, Projeto
+# Campos que NÃO aparecem: ❌ Colunas, Filtros específicos, Ações específicas
+```
+
+#### Exemplo 2: Com Tabela
+```bash
+# Features selecionadas: tabela, filtros, acoes
+# Campos que aparecem: ✅ Nome, Prompt, Features, Projeto, Colunas, Filtros, Ações
+```
+
+#### Exemplo 3: Apenas Cards
+```bash
+# Features selecionadas: cards, graficos
+# Campos que aparecem: ✅ Nome, Prompt, Features, Projeto
+# Campos que NÃO aparecem: ❌ Colunas, Filtros específicos, Ações específicas
+```
+
+### 📊 Análise de Prompt e Geração
 
 #### 1. Análise Automática
 ```bash
@@ -73,6 +153,85 @@ node scripts/analyze-prompt.js "Dashboard com cards de métricas e gráficos" da
 
 # Resultado: docs/dashboardvendas-analysis.md
 ```
+
+### 🎯 Prompt Detalhado para IA (NOVO)
+
+Quando você seleciona **features avançadas** (cards, gráficos, modal, etc.) ou força o uso da IA, o sistema automaticamente solicita um **prompt detalhado** para melhorar a precisão da geração.
+
+#### **Interface do Generator UI:**
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Generator UI                        │
+├─────────────────────────────────────────────────────────┤
+│ Nome da Tela: [DashboardFinanceiro]                   │
+│                                                        │
+│ Prompt: [Dashboard com cards de métricas]             │
+│                                                        │
+│ Features: [x] Cards  [x] Gráficos  [ ] Filtros       │
+│           [ ] Tabela  [ ] Modal    [ ] Exportação     │
+│                                                        │
+│ Projeto: [dashboard]                                  │
+│                                                        │
+│ Forçar uso da IA? (y/N) · true                       │
+│                                                        │
+│ Descreva detalhadamente a tela:                       │
+│ [Crie um dashboard financeiro com: 1) Cards de        │
+│  métricas no topo: Receita Total (R$ 150.000),       │
+│  Despesas (R$ 80.000), Lucro (R$ 70.000), Clientes   │
+│  Ativos (1.250) - cada card com ícone, valor grande  │
+│  e percentual de crescimento. 2) Gráfico de barras:  │
+│  Vendas mensais dos últimos 6 meses com cores        │
+│  diferentes por mês. 3) Gráfico de pizza: Distribui- │
+│  ção de gastos por categoria. 4) Filtros: Seletor    │
+│  de período e dropdown de categoria. 5) Layout       │
+│  responsivo. 6) Animações suaves. 7) Botão de       │
+│  exportação Excel.]                                   │
+│                                                        │
+│ Gerar documentação detalhada para Copilot? (Y/n) · true│
+│                                                        │
+│ [GERAR TELA]  [CANCELAR]                             │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### **Documentação Gerada:**
+
+O sistema gera **dois arquivos** quando usa IA com prompt detalhado:
+
+**A) Documentação Básica** (`docs/dashboardfinanceiro-analysis.md`)
+- Análise de prompt e features
+- Recomendação de gerador (IA/Nx)
+- Estatísticas e complexidade
+- Comandos executados
+
+**B) Documentação Detalhada** (`docs/dashboardfinanceiro-detailed-spec.md`)
+- **Especificação completa** para Copilot
+- **Prompt detalhado** exato
+- **Estrutura esperada** (TypeScript, HTML, SCSS)
+- **Features específicas** com instruções
+- **Checklist de implementação**
+- **Comandos úteis**
+
+#### **Exemplo de Prompt Detalhado:**
+```
+Crie um dashboard financeiro com: 1) Cards de métricas no topo: Receita Total (R$ 150.000), Despesas (R$ 80.000), Lucro (R$ 70.000), Clientes Ativos (1.250) - cada card com ícone, valor grande e percentual de crescimento. 2) Gráfico de barras: Vendas mensais dos últimos 6 meses com cores diferentes por mês. 3) Gráfico de pizza: Distribuição de gastos por categoria (Marketing 30%, Operacional 25%, RH 20%, TI 15%, Outros 10%). 4) Filtros: Seletor de período (último mês, 3 meses, 6 meses, 1 ano) e dropdown de categoria. 5) Layout responsivo: Cards em grid 2x2 no desktop, empilhados no mobile. 6) Animações suaves nos cards e gráficos. 7) Botão de exportação Excel no canto superior direito.
+```
+
+#### **💡 Dicas para Prompts Detalhados:**
+
+**✅ O que incluir:**
+- Layout específico (grid, flexbox, posicionamento)
+- Componentes específicos (cards, gráficos, tabelas)
+- Dados específicos (valores, categorias, cores)
+- Funcionalidades específicas (filtros, ações, validações)
+- Animações específicas (transições, efeitos)
+- Responsividade específica (breakpoints, comportamentos)
+
+**❌ O que evitar:**
+- Prompts muito genéricos
+- Falta de especificidade
+- Não mencionar dados específicos
+- Não detalhar layout
+- Não especificar funcionalidades
 
 #### 2. Geração Híbrida (Recomendado)
 ```bash
@@ -93,26 +252,6 @@ node scripts/generate-with-ai.js
 
 # Execução automática com documentação
 node scripts/smart-generator.js "Tela de produtos com filtros" telaprodutos
-```
-
-### 📊 Estrutura Gerada (IA Avançado)
-
-```
-apps/dashboard/src/app/dashboardvendas/
-├── dashboardvendas.component.ts      # Lógica com imports completos
-├── dashboardvendas.component.html    # Template dinâmico com cards/gráficos
-├── dashboardvendas.component.scss    # Estilos responsivos
-└── dashboardvendas.component.spec.ts # Testes completos
-```
-
-### 📋 Estrutura Gerada (Nx Básico)
-
-```
-apps/dashboard/src/app/usuarios/
-├── usuarios.component.ts
-├── usuarios.component.html
-├── usuarios.component.scss
-└── usuarios.component.spec.ts
 ```
 
 ### 🚀 Executar o App
@@ -247,8 +386,29 @@ O arquivo `libs/schematics/src/generators/hybrid-generator/schema.json` define:
 - **`name`**: Nome do componente
 - **`project`**: Projeto de destino
 - **`prompt`**: Descrição da tela a ser gerada
+- **`features`**: Features da tela (com validação condicional)
 - **`forceAI`**: Forçar uso da IA
 - **`forceNx`**: Forçar uso do Nx
+- **`generateDocs`**: Gerar documentação automática
+
+### 🎯 Validação Condicional (NOVO)
+
+O schema usa `allOf` com `if`/`then` para validação condicional:
+
+```json
+{
+  "allOf": [
+    {
+      "if": { "properties": { "features": { "contains": { "const": "tabela" } } } },
+      "then": { "properties": { "columns": { "type": "array", "x-prompt": "..." } } }
+    },
+    {
+      "if": { "properties": { "features": { "contains": { "const": "filtros" } } } },
+      "then": { "properties": { "filters": { "type": "array", "x-prompt": "..." } } }
+    }
+  ]
+}
+```
 
 ### 🤖 Scripts de Análise
 
@@ -288,6 +448,18 @@ node scripts/generate-with-ai.js
 - Input de prompt via terminal
 - Opções de força (Nx/IA)
 - Execução direta
+
+#### `scripts/generate-ui.js` (NOVO)
+```bash
+# Uso: node scripts/generate-ui.js [tipo]
+node scripts/generate-ui.js hybrid
+```
+
+**Funcionalidades:**
+- Abre Generator UI automaticamente
+- Validação condicional integrada
+- Interface amigável
+- Dicas de uso
 
 ## 🤖 Prompts para IA
 
@@ -349,6 +521,10 @@ Use:
 
 ### 🎯 Geração de Telas
 ```bash
+# Generator UI (RECOMENDADO)
+node scripts/generate-ui.js
+npx nx g @usando-nx/schematics:hybrid-generator
+
 # Geração híbrida (recomendado)
 npx nx g ./dist/libs/schematics:hybrid-generator dashboardvendas --prompt="Dashboard com cards de métricas e gráficos"
 
@@ -362,6 +538,18 @@ npx nx g ./dist/libs/schematics:hybrid-generator usuarios --prompt="Lista simple
 npx nx g @usando-nx/schematics:generate-screen usuarios
 ```
 
+### 🎯 Exemplos com Prompt Detalhado (NOVO)
+```bash
+# Dashboard Financeiro com IA
+npx nx g @usando-nx/schematics:hybrid-generator DashboardFinanceiro --prompt="Dashboard financeiro" --features=cards,graficos,filtros --forceAI=true --detailedPrompt="Crie um dashboard financeiro com: 1) Cards de métricas no topo: Receita Total (R$ 150.000), Despesas (R$ 80.000), Lucro (R$ 70.000), Clientes Ativos (1.250) - cada card com ícone, valor grande e percentual de crescimento. 2) Gráfico de barras: Vendas mensais dos últimos 6 meses com cores diferentes por mês. 3) Gráfico de pizza: Distribuição de gastos por categoria (Marketing 30%, Operacional 25%, RH 20%, TI 15%, Outros 10%). 4) Filtros: Seletor de período (último mês, 3 meses, 6 meses, 1 ano) e dropdown de categoria. 5) Layout responsivo: Cards em grid 2x2 no desktop, empilhados no mobile. 6) Animações suaves nos cards e gráficos. 7) Botão de exportação Excel no canto superior direito." --generateDetailedDocs=true
+
+# Tela de Produtos Avançada
+npx nx g @usando-nx/schematics:hybrid-generator ProdutosAvancado --prompt="Tela de produtos avançada" --features=tabela,filtros,acoes,modal --forceAI=true --detailedPrompt="Crie uma tela de produtos com: 1) Filtros avançados no topo: Busca por nome (com autocomplete), Seletor de categoria (múltipla seleção), Range de preço (slider duplo), Status (ativo/inativo). 2) Tabela com colunas: Foto (thumbnail), Nome, Categoria, Preço, Estoque, Status, Ações - com ordenação por todas as colunas. 3) Ações por linha: Visualizar (modal), Editar (modal), Excluir (confirmação), Ativar/Desativar (toggle). 4) Modal de criação/edição com: Upload de foto, Validação em tempo real, Preview da imagem. 5) Paginação com 10 itens por página. 6) Botão de exportação Excel com filtros aplicados. 7) Layout responsivo: Tabela com scroll horizontal no mobile." --generateDetailedDocs=true
+
+# Formulário de Cadastro
+npx nx g @usando-nx/schematics:hybrid-generator CadastroCliente --prompt="Formulário de cadastro" --features=formulario,modal --forceAI=true --detailedPrompt="Crie um formulário de cadastro de cliente com: 1) Stepper de 3 etapas: Dados Pessoais, Endereço, Confirmação. 2) Etapa 1: Nome completo, Email, Telefone, CPF, Data de nascimento - com máscaras e validações. 3) Etapa 2: CEP (com busca automática), Endereço, Número, Complemento, Bairro, Cidade, Estado - com auto-complete de cidade/estado. 4) Etapa 3: Resumo dos dados e confirmação. 5) Upload de foto do cliente com preview. 6) Validações: Campos obrigatórios, email válido, CPF válido, CEP válido. 7) Botões: Anterior, Próximo, Salvar, Cancelar. 8) Animações suaves entre etapas." --generateDetailedDocs=true
+```
+
 ### 📊 Análise e Documentação
 ```bash
 # Análise de prompt
@@ -372,6 +560,9 @@ node scripts/smart-generator.js "Tela de produtos com filtros" telaprodutos --ex
 
 # CLI interativo
 node scripts/generate-with-ai.js
+
+# Generator UI simplificado (NOVO)
+node scripts/generate-ui.js hybrid
 ```
 
 ### 🛠️ Desenvolvimento
@@ -401,12 +592,39 @@ Para dúvidas sobre o sistema híbrido IA + Nx:
 
 ### 🎯 Fluxo Recomendado
 
-1. **Analise o prompt**: Use `scripts/analyze-prompt.js`
-2. **Gere a tela**: Use `hybrid-generator` com recomendação
-3. **Teste a funcionalidade**: Execute `npx nx serve dashboard`
-4. **Customize conforme necessário**: Edite os arquivos gerados
-5. **Documente mudanças**: Atualize a documentação
+1. **Use o Generator UI**: `node scripts/generate-ui.js`
+2. **Analise o prompt**: Use `scripts/analyze-prompt.js`
+3. **Gere a tela**: Use `hybrid-generator` com recomendação
+4. **Teste a funcionalidade**: Execute `npx nx serve dashboard`
+5. **Customize conforme necessário**: Edite os arquivos gerados
+6. **Documente mudanças**: Atualize a documentação
+
+## 🎯 Benefícios
+
+### ✅ **Para o Desenvolvedor**
+- **Geração rápida** de telas
+- **Decisão inteligente** entre Nx e IA
+- **Documentação automática**
+- **Validação condicional**
+- **Prompt detalhado** para especificações precisas
+
+### ✅ **Para o Copilot**
+- **Contexto claro** com documentação detalhada
+- **Especificações precisas** com prompt detalhado
+- **Exemplos concretos** de implementação
+- **Checklist de implementação**
+- **Prompt detalhado** para melhor precisão
+- **Documentação específica** para IA
+
+### ✅ **Para o Projeto**
+- **Consistência** visual e de código
+- **Padrões estabelecidos**
+- **Documentação automática**
+- **Manutenibilidade**
+- **Especificações claras** para desenvolvimento
 
 ---
 
-**Lembre-se**: O sistema híbrido é inteligente e complementar. Use Nx para features básicas e IA para features avançadas. A análise automática garante a melhor abordagem para cada caso.
+**Lembre-se**: O sistema híbrido é inteligente e complementar. Use Nx para features básicas e IA para features avançadas. A análise automática garante a melhor abordagem para cada caso. O **Generator UI** agora é o padrão para uma experiência mais amigável! 
+
+**Dica**: Quanto mais detalhado o prompt, melhor será o resultado! 🎉

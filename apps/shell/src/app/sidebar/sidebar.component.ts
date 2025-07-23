@@ -134,6 +134,121 @@ interface MenuItem {
                 <mat-icon matListItemIcon>list</mat-icon>
                 <span matListItemTitle>telasimples</span>
               </a>
+
+              <a mat-list-item routerLink="/dashboard/dashboardvendas" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>dashboardvendas</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/dashboardvendas" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>dashboardvendas</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/dashboardfinanceiro" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>dashboardfinanceiro</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/telausuarios" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>telausuarios</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/dashboardfinanceiro" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>dashboardfinanceiro</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/telausuarios" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>telausuarios</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/exemplo-tela" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>exemplo-tela</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste6" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste6</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/um-filtro" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>um-filtro</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/nome-tela" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>nome-tela</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste-tela" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste-tela</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/tela-com-ia" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>tela-com-ia</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/npx-nx-g-@usando-nx/schematics:hybrid-generator-dashboard-financeiro---prompt="dashboard-financeiro"---features=cards,graficos,filtros---force-ai=true---detailed-prompt="crie-um-dashboard-financeiro-com:-1)-cards-de-métricas-no-topo:-receita-total-(r$-150.000),-despesas-(r$-80.000),-lucro-(r$-70.000),-clientes-ativos-(1.250)---cada-card-com-ícone,-valor-grande-e-percentual-de-crescimento.-2)-gráfico-de-barras:-vendas-mensais-dos-últimos-6-meses-com-cores-diferentes-por-mês.-3)-gráfico-de-pizza:-distribuição-de-gastos-por-categoria-(marketing-30%,-operacional-25%,-rh-20%,-ti-15%,-outros-10%).-4)-filtros:-seletor-de-período-(último-mês,-3-meses,-6-meses,-1-ano)-e-dropdown-de-categoria.-5)-layout-responsivo:-cards-em-grid-2x2-no-desktop,-empilhados-no-mobile.-6)-animações-suaves-nos-cards-e-gráficos.-7)-botão-de-exportação-excel-no-canto-superior-direito."---generate-detailed-docs=true" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>npx-nx-g-@usando-nx/schematics:hybrid-generator-dashboard-financeiro---prompt="dashboard-financeiro"---features=cards,graficos,filtros---force-ai=true---detailed-prompt="crie-um-dashboard-financeiro-com:-1)-cards-de-métricas-no-topo:-receita-total-(r$-150.000),-despesas-(r$-80.000),-lucro-(r$-70.000),-clientes-ativos-(1.250)---cada-card-com-ícone,-valor-grande-e-percentual-de-crescimento.-2)-gráfico-de-barras:-vendas-mensais-dos-últimos-6-meses-com-cores-diferentes-por-mês.-3)-gráfico-de-pizza:-distribuição-de-gastos-por-categoria-(marketing-30%,-operacional-25%,-rh-20%,-ti-15%,-outros-10%).-4)-filtros:-seletor-de-período-(último-mês,-3-meses,-6-meses,-1-ano)-e-dropdown-de-categoria.-5)-layout-responsivo:-cards-em-grid-2x2-no-desktop,-empilhados-no-mobile.-6)-animações-suaves-nos-cards-e-gráficos.-7)-botão-de-exportação-excel-no-canto-superior-direito."---generate-detailed-docs=true</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste1" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste1</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/teste5" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste5</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/tela-1" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>tela-1</span>
+              </a>
+
+              <a mat-list-item routerLink="/dashboard/dashboard-financeiro" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>dashboard-financeiro</span>
+              </a>
             </mat-nav-list>
           </mat-expansion-panel>
 

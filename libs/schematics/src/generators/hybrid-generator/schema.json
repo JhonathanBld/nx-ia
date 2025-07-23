@@ -16,23 +16,153 @@
     "project": {
       "type": "string",
       "description": "Nome do projeto onde será criado",
-      "default": "dashboard"
+      "default": "dashboard",
+      "x-prompt": "Em qual projeto você quer criar a tela?"
     },
     "prompt": {
       "type": "string",
       "description": "Descrição detalhada da funcionalidade desejada",
       "x-prompt": "Descreva a funcionalidade que você quer criar (filtros, tabelas, gráficos, etc.)"
     },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["filtros", "tabela", "cards", "graficos", "modal", "formulario", "exportacao", "responsivo", "acoes"]
+      },
+      "description": "Features da tela",
+      "x-prompt": "Quais features você quer incluir?",
+      "default": ["filtros", "tabela", "acoes"]
+    },
     "forceAI": {
       "type": "boolean",
       "description": "Força o uso da IA mesmo para features básicas",
-      "default": false
+      "default": false,
+      "x-prompt": "Forçar uso da IA?"
     },
     "forceNx": {
       "type": "boolean",
       "description": "Força o uso do Nx mesmo para features avançadas",
-      "default": false
+      "default": false,
+      "x-prompt": "Forçar uso do Nx?"
+    },
+    "generateDocs": {
+      "type": "boolean",
+      "description": "Gerar documentação automática em markdown",
+      "default": true,
+      "x-prompt": "Gerar documentação automática?"
+    },
+    "detailedPrompt": {
+      "type": "string",
+      "description": "Prompt detalhado para IA (só usado quando IA é selecionada)",
+      "x-prompt": "Descreva detalhadamente a tela (layout, componentes, funcionalidades específicas)"
+    },
+    "generateDetailedDocs": {
+      "type": "boolean",
+      "description": "Gerar documentação detalhada para Copilot (só quando usar IA)",
+      "default": true,
+      "x-prompt": "Gerar documentação detalhada para Copilot?"
     }
   },
-  "required": ["name", "prompt"]
+  "required": ["name", "prompt"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "tabela"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Colunas da tabela",
+            "x-prompt": "Quais colunas você quer na tabela?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "filtros"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filtros da tela",
+            "x-prompt": "Quais filtros você quer incluir?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "acoes"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["visualizar", "editar", "excluir", "adicionar", "exportar"]
+            },
+            "description": "Ações disponíveis",
+            "x-prompt": "Quais ações você quer incluir?",
+            "default": ["visualizar", "editar", "excluir"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          { "properties": { "forceAI": { "const": true } } },
+          { "properties": { "features": { "contains": { "const": "cards" } } } },
+          { "properties": { "features": { "contains": { "const": "graficos" } } } },
+          { "properties": { "features": { "contains": { "const": "modal" } } } },
+          { "properties": { "features": { "contains": { "const": "exportacao" } } } },
+          { "properties": { "features": { "contains": { "const": "responsivo" } } } }
+        ]
+      },
+      "then": {
+        "properties": {
+          "detailedPrompt": {
+            "type": "string",
+            "description": "Prompt detalhado para IA (layout, componentes, funcionalidades específicas)",
+            "x-prompt": "Descreva detalhadamente a tela (layout, componentes, funcionalidades específicas)"
+          },
+          "generateDetailedDocs": {
+            "type": "boolean",
+            "description": "Gerar documentação detalhada para Copilot",
+            "default": true,
+            "x-prompt": "Gerar documentação detalhada para Copilot?"
+          }
+        }
+      }
+    }
+  ]
 } 
