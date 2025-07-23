@@ -1,0 +1,7 @@
+{
+  "dashboard": {
+    "remoteEntry": "http://localhost:4200/remoteEntry.js",
+    "remoteName": "dashboard",
+    "exposedModule": "./Module"
+  }
+} 

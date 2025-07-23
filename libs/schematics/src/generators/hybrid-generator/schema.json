@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "HybridGenerator",
+  "title": "Hybrid Generator Options Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome da tela/componente a ser gerado",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Qual é o nome da tela que você deseja gerar?"
+    },
+    "project": {
+      "type": "string",
+      "description": "Nome do projeto onde será criado",
+      "default": "dashboard"
+    },
+    "prompt": {
+      "type": "string",
+      "description": "Descrição detalhada da funcionalidade desejada",
+      "x-prompt": "Descreva a funcionalidade que você quer criar (filtros, tabelas, gráficos, etc.)"
+    },
+    "forceAI": {
+      "type": "boolean",
+      "description": "Força o uso da IA mesmo para features básicas",
+      "default": false
+    },
+    "forceNx": {
+      "type": "boolean",
+      "description": "Força o uso do Nx mesmo para features avançadas",
+      "default": false
+    }
+  },
+  "required": ["name", "prompt"]
+} 

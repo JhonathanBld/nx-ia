@@ -1,0 +1,261 @@
+<div class="dashboard-container">
+  <!-- Header do Dashboard -->
+  <div class="dashboard-header">
+    <h1>📊 Dashboard de Vendas</h1>
+    <p class="subtitle">Visão geral das métricas e performance de vendas</p>
+  </div>
+
+  <!-- Cards de Métricas -->
+  <div class="metrics-grid">
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-content">
+          <div class="metric-icon">
+            <mat-icon>attach_money</mat-icon>
+          </div>
+          <div class="metric-info">
+            <h3>Total de Vendas</h3>
+            <p class="metric-value">R$ 150.000</p>
+            <span class="metric-change positive">+12.5%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-content">
+          <div class="metric-icon">
+            <mat-icon>today</mat-icon>
+          </div>
+          <div class="metric-info">
+            <h3>Vendas Hoje</h3>
+            <p class="metric-value">R$ 12.500</p>
+            <span class="metric-change positive">+8.3%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-content">
+          <div class="metric-icon">
+            <mat-icon>inventory</mat-icon>
+          </div>
+          <div class="metric-info">
+            <h3>Produtos Vendidos</h3>
+            <p class="metric-value">1.234</p>
+            <span class="metric-change positive">+15.2%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <mat-card-content>
+        <div class="metric-content">
+          <div class="metric-icon">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="metric-info">
+            <h3>Clientes Ativos</h3>
+            <p class="metric-value">567</p>
+            <span class="metric-change positive">+5.7%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="charts-section">
+    <div class="chart-row">
+      <!-- Gráfico de Barras -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>bar_chart</mat-icon>
+            Vendas por Mês
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <div class="chart-placeholder">
+              <mat-icon>bar_chart</mat-icon>
+              <p>Gráfico de Barras - Vendas por Mês</p>
+              <div class="chart-data">
+                <div class="chart-bar" style="height: 60%;">Jan: R$ 25k</div>
+                <div class="chart-bar" style="height: 75%;">Fev: R$ 30k</div>
+                <div class="chart-bar" style="height: 85%;">Mar: R$ 35k</div>
+                <div class="chart-bar" style="height: 100%;">Abr: R$ 40k</div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Gráfico de Pizza -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>pie_chart</mat-icon>
+            Vendas por Categoria
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <div class="chart-placeholder">
+              <mat-icon>pie_chart</mat-icon>
+              <p>Gráfico de Pizza - Vendas por Categoria</p>
+              <div class="chart-data">
+                <div class="pie-segment" style="--percentage: 45%;">Eletrônicos: 45%</div>
+                <div class="pie-segment" style="--percentage: 30%;">Roupas: 30%</div>
+                <div class="pie-segment" style="--percentage: 15%;">Livros: 15%</div>
+                <div class="pie-segment" style="--percentage: 10%;">Outros: 10%</div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>filter_list</mat-icon>
+          Filtros e Busca
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="filters-grid">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Período</mat-label>
+          <input matInput placeholder="Selecione o período">
+          <mat-icon matSuffix>calendar_today</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Categoria</mat-label>
+          <mat-select placeholder="Selecione a categoria">
+            <mat-option value="eletronicos">Eletrônicos</mat-option>
+            <mat-option value="roupas">Roupas</mat-option>
+            <mat-option value="livros">Livros</mat-option>
+            <mat-option value="outros">Outros</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>category</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Vendedor</mat-label>
+          <input matInput placeholder="Filtrar por vendedor">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Status</mat-label>
+          <mat-select placeholder="Selecione o status">
+            <mat-option value="ativo">Ativo</mat-option>
+            <mat-option value="inativo">Inativo</mat-option>
+            <mat-option value="pendente">Pendente</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>info</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="applyFilters()">
+          <mat-icon>filter_list</mat-icon>
+          Aplicar Filtros
+        </button>
+        <button mat-button (click)="clearFilters()">
+          <mat-icon>clear</mat-icon>
+          Limpar
+        </button>
+      </div>
+    </mat-expansion-panel>
+  </div>
+
+  <!-- Tabela de Transações -->
+  <div class="table-section">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>receipt</mat-icon>
+          Transações Recentes
+        </mat-card-title>
+        <mat-card-subtitle>Lista das últimas transações de vendas</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <table mat-table [dataSource]="items" class="data-table" matSort>
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let item">{{item.id}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="cliente">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</th>
+            <td mat-cell *matCellDef="let item">{{item.cliente}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="produto">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Produto</th>
+            <td mat-cell *matCellDef="let item">{{item.produto}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="valor">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Valor</th>
+            <td mat-cell *matCellDef="let item">{{item.valor}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="data">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Data</th>
+            <td mat-cell *matCellDef="let item">{{item.data}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let item">
+              <span class="status-badge" [class]="'status-' + item.status.toLowerCase()">
+                {{item.status}}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td mat-cell *matCellDef="let item">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="viewItem(item)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>Visualizar</span>
+                </button>
+                <button mat-menu-item (click)="editItem(item)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Editar</span>
+                </button>
+                <button mat-menu-item (click)="deleteItem(item)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Excluir</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]">
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div> 

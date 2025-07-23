@@ -1,0 +1,90 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title><%= displayName %></mat-card-title>
+    <mat-card-subtitle>Gerenciamento de <%= className %></mat-card-subtitle>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <!-- Filtros -->
+    <div class="filters-section">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>filter_list</mat-icon>
+            Filtros e Busca
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <div class="filters-grid">
+          <% filters.forEach(function(filter) { %>
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label><%= filter.charAt(0).toUpperCase() + filter.slice(1) %></mat-label>
+            <input matInput [(ngModel)]="filters.<%= filter %>" placeholder="Filtrar por <%= filter %>">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+          <% }); %>
+        </div>
+        
+        <div class="filter-actions">
+          <button mat-raised-button color="primary" (click)="applyFilters()">
+            <mat-icon>filter_list</mat-icon>
+            Aplicar Filtros
+          </button>
+          <button mat-button (click)="clearFilters()">
+            <mat-icon>clear</mat-icon>
+            Limpar
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </div>
+
+    <!-- Ações -->
+    <div class="main-actions">
+      <button mat-raised-button color="primary" class="primary-action" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Adicionar <%= className %>
+      </button>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-section">
+      <table mat-table [dataSource]="items" class="data-table" matSort>
+        <% columns.forEach(function(column) { %>
+        <ng-container matColumnDef="<%= column %>">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><%= getColumnDisplayName(column) %></th>
+          <td mat-cell *matCellDef="let item">{{item.<%= column %>}}</td>
+        </ng-container>
+        <% }); %>
+
+        <ng-container matColumnDef="acoes">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let item">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="viewItem(item)">
+                <mat-icon>visibility</mat-icon>
+                <span>Visualizar</span>
+              </button>
+              <button mat-menu-item (click)="editItem(item)">
+                <mat-icon>edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item (click)="deleteItem(item)">
+                <mat-icon>delete</mat-icon>
+                <span>Excluir</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]">
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card> 

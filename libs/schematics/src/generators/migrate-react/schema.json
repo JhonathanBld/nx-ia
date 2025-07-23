@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "MigrateReact",
+  "title": "Migrate React to Angular Options Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome do componente a ser migrado",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Qual é o nome do componente React que você deseja migrar?"
+    },
+    "project": {
+      "type": "string",
+      "description": "Nome do projeto onde o componente será criado",
+      "default": "dashboard"
+    },
+    "reactFile": {
+      "type": "string",
+      "description": "Caminho para o arquivo React (.jsx/.tsx)",
+      "x-prompt": "Qual é o caminho para o arquivo React?"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Features a serem incluídas (hooks, styled-components, etc.)",
+      "default": ["hooks", "styled-components", "props"]
+    },
+    "targetFramework": {
+      "type": "string",
+      "description": "Framework Angular de destino",
+      "enum": ["standalone", "ngmodule"],
+      "default": "standalone"
+    }
+  },
+  "required": ["name", "reactFile"]
+} 

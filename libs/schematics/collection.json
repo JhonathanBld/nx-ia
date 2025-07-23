@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "schematics",
+  "version": "1.0.0",
+  "generators": {
+    "generate-screen": {
+      "description": "Gera uma tela Angular padrão com filtro, tabela e botões de ação",
+      "factory": "./src/generators/generate-screen/generator#default",
+      "schema": "./src/generators/generate-screen/schema.json"
+    },
+    "ai-generate-screen": {
+      "description": "Gera uma tela Angular usando IA baseada em prompts estruturados",
+      "factory": "./src/generators/ai-generate-screen/generator#default",
+      "schema": "./src/generators/ai-generate-screen/schema.json"
+    },
+    "hybrid-generator": {
+      "description": "Gera componentes inteligentemente usando Nx para features básicas e IA para avançadas",
+      "factory": "./src/generators/hybrid-generator/generator#default",
+      "schema": "./src/generators/hybrid-generator/schema.json"
+    },
+    "migrate-react": {
+      "description": "Migra componentes React para Angular usando IA",
+      "factory": "./src/generators/migrate-react/generator#default",
+      "schema": "./src/generators/migrate-react/schema.json"
+    }
+  }
+} 

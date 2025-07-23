@@ -1,0 +1,8 @@
+{
+  "name": "@usando-nx/schematics",
+  "version": "1.0.0",
+  "schematics": "./collection.json",
+  "dependencies": {
+    "@nx/devkit": "^21.3.2"
+  }
+} 

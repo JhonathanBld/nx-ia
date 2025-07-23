@@ -1,0 +1,188 @@
+{
+  "screenName": "usuarios",
+  "title": "Gerenciamento de Usuários",
+  "description": "Tela para gerenciar usuários do sistema",
+  
+  "filters": {
+    "searchFields": [
+      {
+        "name": "nome",
+        "label": "Nome",
+        "type": "text",
+        "placeholder": "Buscar por nome..."
+      },
+      {
+        "name": "email",
+        "label": "Email",
+        "type": "email",
+        "placeholder": "Buscar por email..."
+      },
+      {
+        "name": "status",
+        "label": "Status",
+        "type": "select",
+        "options": [
+          { "value": "ativo", "label": "Ativo" },
+          { "value": "inativo", "label": "Inativo" },
+          { "value": "pendente", "label": "Pendente" }
+        ]
+      }
+    ],
+    "advancedFilters": [
+      {
+        "name": "dataCadastro",
+        "label": "Data de Cadastro",
+        "type": "date-range"
+      },
+      {
+        "name": "perfil",
+        "label": "Perfil",
+        "type": "multi-select",
+        "options": [
+          { "value": "admin", "label": "Administrador" },
+          { "value": "user", "label": "Usuário" },
+          { "value": "manager", "label": "Gerente" }
+        ]
+      }
+    ]
+  },
+  
+  "columns": [
+    {
+      "field": "id",
+      "header": "ID",
+      "type": "number",
+      "sortable": true,
+      "width": "80px"
+    },
+    {
+      "field": "nome",
+      "header": "Nome",
+      "type": "text",
+      "sortable": true,
+      "width": "200px"
+    },
+    {
+      "field": "email",
+      "header": "Email",
+      "type": "email",
+      "sortable": true,
+      "width": "250px"
+    },
+    {
+      "field": "status",
+      "header": "Status",
+      "type": "badge",
+      "sortable": true,
+      "width": "100px",
+      "badgeColors": {
+        "ativo": "success",
+        "inativo": "danger",
+        "pendente": "warning"
+      }
+    },
+    {
+      "field": "dataCadastro",
+      "header": "Data Cadastro",
+      "type": "date",
+      "sortable": true,
+      "width": "150px",
+      "format": "dd/MM/yyyy"
+    },
+    {
+      "field": "acoes",
+      "header": "Ações",
+      "type": "actions",
+      "width": "120px",
+      "actions": [
+        {
+          "name": "edit",
+          "icon": "fas fa-edit",
+          "label": "Editar",
+          "color": "primary"
+        },
+        {
+          "name": "delete",
+          "icon": "fas fa-trash",
+          "label": "Excluir",
+          "color": "danger"
+        }
+      ]
+    }
+  ],
+  
+  "actions": {
+    "primary": [
+      {
+        "name": "add",
+        "label": "Adicionar Usuário",
+        "icon": "fas fa-plus",
+        "type": "button"
+      }
+    ],
+    "secondary": [
+      {
+        "name": "export",
+        "label": "Exportar",
+        "icon": "fas fa-download",
+        "type": "dropdown",
+        "options": [
+          { "value": "excel", "label": "Excel" },
+          { "value": "pdf", "label": "PDF" },
+          { "value": "csv", "label": "CSV" }
+        ]
+      },
+      {
+        "name": "import",
+        "label": "Importar",
+        "icon": "fas fa-upload",
+        "type": "button"
+      }
+    ]
+  },
+  
+  "pagination": {
+    "enabled": true,
+    "pageSize": 20,
+    "pageSizeOptions": [10, 20, 50, 100]
+  },
+  
+  "sorting": {
+    "defaultSort": {
+      "field": "nome",
+      "direction": "asc"
+    },
+    "multiSort": true
+  },
+  
+  "api": {
+    "endpoint": "/api/usuarios",
+    "methods": {
+      "list": "GET",
+      "create": "POST",
+      "update": "PUT",
+      "delete": "DELETE"
+    }
+  },
+  
+  "migrationNotes": {
+    "reactToAngular": {
+      "stateManagement": "Substitua useState por BehaviorSubject ou signals",
+      "lifecycle": "Converta useEffect para ngOnInit/ngOnDestroy",
+      "eventHandling": "Transforme onClick em (click) e onChange em (change)",
+      "conditionalRendering": "Substitua {condition && <div>} por *ngIf=\"condition\"",
+      "loops": "Converta {items.map()} para *ngFor=\"let item of items\"",
+      "forms": "Use ReactiveFormsModule ou TemplateDrivenForms",
+      "styling": "Substitua className por [class] ou [ngClass]"
+    },
+    "aiAssistance": {
+      "githubCopilot": "Use GitHub Copilot para converter JSX para Angular templates",
+      "cursor": "Use Cursor para refatorar código React para Angular",
+      "prompts": [
+        "Converta este componente React para Angular",
+        "Transforme este JSX em template Angular",
+        "Migre este useState para BehaviorSubject"
+      ]
+    }
+  }
+} 

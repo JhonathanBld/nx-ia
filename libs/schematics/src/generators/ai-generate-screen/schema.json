@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "AiGenerateScreen",
+  "title": "AI Generate Screen Options Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nome da tela a ser gerada",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Qual é o nome da tela que você deseja gerar?"
+    },
+    "project": {
+      "type": "string",
+      "description": "Nome do projeto onde a tela será criada",
+      "default": "dashboard"
+    },
+    "prompt": {
+      "type": "string",
+      "description": "Prompt detalhado para a IA gerar a tela",
+      "x-prompt": "Descreva a tela que você quer gerar (filtros, tabela, ações, etc.)"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista de features da tela (filtros, tabela, modal, etc.)",
+      "default": ["filtros", "tabela", "acoes"]
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Colunas da tabela"
+    },
+    "filters": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Filtros da tela"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ações disponíveis (editar, excluir, etc.)"
+    }
+  },
+  "required": ["name", "prompt"]
+} 
