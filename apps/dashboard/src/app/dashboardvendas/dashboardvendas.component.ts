@@ -1,0 +1,137 @@
+import { Component, OnInit } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-dashboardvendas',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatTooltipModule,
+    MatExpansionModule,
+    MatTabsModule,
+    MatStepperModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatSlideToggleModule,
+    MatSliderModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatMenuModule,
+    MatBadgeModule,
+    MatDividerModule,
+    MatListModule,
+    MatGridListModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  templateUrl: './dashboardvendas.component.html',
+  styleUrls: ['./dashboardvendas.component.scss']
+})
+export class DashboardvendasComponent implements OnInit {
+  searchTerm = '';
+  displayedColumns: string[] = ['id', 'cliente', 'produto', 'valor', 'data', 'status', 'acoes'];
+
+  filters: any = {
+    periodo: '',
+    categoria: '',
+    vendedor: '',
+    status: '',
+  };
+
+  items: any[] = [
+    { id: 1, cliente: 'João Silva', produto: 'iPhone 13', valor: 'R$ 5.999', data: '2024-01-15', status: 'Ativo' },
+    { id: 2, cliente: 'Maria Santos', produto: 'Notebook Dell', valor: 'R$ 3.500', data: '2024-01-14', status: 'Ativo' },
+    { id: 3, cliente: 'Pedro Costa', produto: 'Camisa Nike', valor: 'R$ 89', data: '2024-01-13', status: 'Pendente' },
+    { id: 4, cliente: 'Ana Oliveira', produto: 'Livro Angular', valor: 'R$ 120', data: '2024-01-12', status: 'Ativo' },
+    { id: 5, cliente: 'Carlos Lima', produto: 'AirPods Pro', valor: 'R$ 2.199', data: '2024-01-11', status: 'Ativo' },
+  ];
+
+  totalItems = 0;
+  pageSize = 10;
+
+  ngOnInit(): void {
+    console.log('Dashboardvendas component initialized');
+    this.loadData();
+  }
+
+  loadData() {
+    console.log('Carregando dados do dashboard...');
+    this.totalItems = this.items.length;
+  }
+
+  applyFilters() {
+    console.log('Aplicando filtros:', this.filters);
+    // Aqui você implementaria a lógica de filtros
+  }
+
+  clearFilters() {
+    this.filters = {
+      periodo: '',
+      categoria: '',
+      vendedor: '',
+      status: '',
+    };
+    this.searchTerm = '';
+    console.log('Filtros limpos');
+  }
+
+  openCreateDialog() {
+    console.log('Abrindo dialog de criação de transação');
+  }
+
+  editItem(item: any) {
+    console.log('Editando transação:', item);
+  }
+
+  deleteItem(item: any) {
+    console.log('Excluindo transação:', item);
+  }
+
+  viewItem(item: any) {
+    console.log('Visualizando transação:', item);
+  }
+} 
