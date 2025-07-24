@@ -12,10 +12,7 @@ interface AiGenerateScreenGeneratorSchema {
   name: string;
   project?: string;
   prompt: string;
-  features?: string[];
-  columns?: string[];
-  filters?: string[];
-  actions?: string[];
+  generateDocs?: boolean;
 }
 
 export default async function (tree: Tree, schema: AiGenerateScreenGeneratorSchema) {
@@ -34,6 +31,11 @@ export default async function (tree: Tree, schema: AiGenerateScreenGeneratorSche
     normalizedNames.fileName
   );
 
+  console.log(`🤖 Gerando tela com IA:`);
+  console.log(`   - Nome: ${schema.name}`);
+  console.log(`   - Projeto: ${projectName}`);
+  console.log(`   - Prompt: ${schema.prompt.substring(0, 100)}...`);
+
   // Analisar o prompt da IA para extrair informações
   const aiAnalysis = analyzePrompt(schema.prompt);
   
@@ -44,15 +46,17 @@ export default async function (tree: Tree, schema: AiGenerateScreenGeneratorSche
     constantName: normalizedNames.constantName,
     projectName: projectName,
     prompt: schema.prompt,
-    features: schema.features || aiAnalysis.features,
-    columns: schema.columns || aiAnalysis.columns,
-    filters: schema.filters || aiAnalysis.filters,
-    actions: schema.actions || aiAnalysis.actions,
+    features: aiAnalysis.features,
+    columns: aiAnalysis.columns,
+    filters: aiAnalysis.filters,
+    actions: aiAnalysis.actions,
     metrics: aiAnalysis.metrics,
     charts: aiAnalysis.charts,
     displayName: getDisplayName(normalizedNames.fileName),
     icon: getIconForScreen(normalizedNames.fileName),
-    getColumnDisplayName: getColumnDisplayName
+    getColumnDisplayName: getColumnDisplayName,
+    getActionDisplayName: getActionDisplayName,
+    getActionIcon: getActionIcon
   };
 
   // Gerar os arquivos baseados na análise da IA
@@ -61,8 +65,14 @@ export default async function (tree: Tree, schema: AiGenerateScreenGeneratorSche
   // Atualizar menu do shell
   try {
     updateShellMenu(normalizedNames.fileName, projectName);
+    console.log(`✅ Menu atualizado: ${normalizedNames.fileName} adicionado ao sidebar`);
   } catch (error: any) {
     console.log('⚠️ Não foi possível atualizar o menu do shell:', error.message);
+  }
+
+  // Gerar documentação automática se solicitado
+  if (schema.generateDocs !== false) {
+    await generateDocumentation(tree, normalizedNames.fileName, schema, aiAnalysis);
   }
 
   await formatFiles(tree);
@@ -203,6 +213,105 @@ function analyzePrompt(prompt: string) {
   return analysis;
 }
 
+async function generateDocumentation(tree: Tree, componentName: string, schema: AiGenerateScreenGeneratorSchema, aiAnalysis: any) {
+  const timestamp = new Date().toISOString().split('T')[0];
+  const fileName = componentName.toLowerCase().replace(/\s+/g, '-');
+  
+  const basicMarkdown = `# Análise de Tela com IA - ${componentName}
+
+## 📋 Informações Gerais
+
+- **Data**: ${timestamp}
+- **Componente**: ${componentName}
+- **Prompt**: "${schema.prompt}"
+- **Gerador**: IA 🤖
+
+## 🔍 Análise Detalhada
+
+### Features Detectadas pela IA
+${aiAnalysis.features.map((f: string) => `- ✅ ${f}`).join('\n')}
+
+### Configurações Extraídas
+${getSpecificConfigurations(aiAnalysis)}
+
+## 🎯 Geração com IA
+
+### 🤖 Usar IA (Avançado)
+
+**Motivo**: Análise inteligente do prompt para extrair features e configurações automaticamente.
+
+**Comando Executado**:
+\`\`\`bash
+npx nx g @usando-nx/schematics:ai-generate-screen ${fileName} --prompt="${schema.prompt}"
+\`\`\`
+
+**Benefícios**:
+- ✅ Análise inteligente do prompt
+- ✅ Extração automática de colunas, filtros e métricas
+- ✅ Geração de templates dinâmicos
+- ✅ Suporte a features avançadas (gráficos, cards, modais)
+- ✅ Imports otimizados baseados nas features
+
+**Estrutura Gerada**:
+\`\`\`
+apps/dashboard/src/app/${fileName}/
+├── ${fileName}.component.ts      # Lógica com imports completos
+├── ${fileName}.component.html    # Template dinâmico
+├── ${fileName}.component.scss    # Estilos responsivos
+└── ${fileName}.component.spec.ts # Testes completos
+\`\`\`
+
+## 📊 Estatísticas
+
+- **Total de Features**: ${aiAnalysis.features.length}
+- **Features Básicas**: ${aiAnalysis.features.filter((f: string) => ['filtros', 'tabela', 'acoes', 'formulario'].includes(f)).length}
+- **Features Avançadas**: ${aiAnalysis.features.filter((f: string) => ['cards', 'graficos', 'modal', 'exportacao', 'responsivo'].includes(f)).length}
+
+## 🎯 Próximos Passos
+
+1. **✅ Comando executado automaticamente**
+2. **Verifique os arquivos gerados**
+3. **Customize conforme necessário**
+4. **Teste a funcionalidade**
+
+---
+
+*Gerado automaticamente pelo Sistema IA*
+`;
+
+  // Salvar arquivo MD básico
+  const docsPath = joinPathFragments('docs', `${fileName}-ai-analysis.md`);
+  
+  try {
+    tree.write(docsPath, basicMarkdown);
+    console.log(`📄 Documentação gerada: ${docsPath}`);
+  } catch (error: any) {
+    console.log('⚠️ Não foi possível gerar documentação:', error.message);
+  }
+}
+
+function getSpecificConfigurations(aiAnalysis: any): string {
+  const configs: string[] = [];
+
+  if (aiAnalysis.columns?.length) {
+    configs.push(`**Colunas da Tabela**: ${aiAnalysis.columns.join(', ')}`);
+  }
+
+  if (aiAnalysis.filters?.length) {
+    configs.push(`**Filtros**: ${aiAnalysis.filters.join(', ')}`);
+  }
+
+  if (aiAnalysis.actions?.length) {
+    configs.push(`**Ações**: ${aiAnalysis.actions.join(', ')}`);
+  }
+
+  if (aiAnalysis.metrics?.length) {
+    configs.push(`**Métricas**: ${aiAnalysis.metrics.map((m: any) => m.name).join(', ')}`);
+  }
+
+  return configs.length > 0 ? configs.join('\n') : '- Nenhuma configuração específica';
+}
+
 function getDisplayName(screenName: string): string {
   const displayMap: Record<string, string> = {
     'usuarios': '👥 Usuários',
@@ -255,4 +364,28 @@ function getColumnDisplayName(column: string): string {
   };
 
   return displayMap[column] || column.charAt(0).toUpperCase() + column.slice(1);
+}
+
+function getActionDisplayName(action: string): string {
+  const displayMap: Record<string, string> = {
+    'visualizar': 'Visualizar',
+    'editar': 'Editar',
+    'excluir': 'Excluir',
+    'adicionar': 'Adicionar',
+    'exportar': 'Exportar'
+  };
+
+  return displayMap[action] || action.charAt(0).toUpperCase() + action.slice(1);
+}
+
+function getActionIcon(action: string): string {
+  const iconMap: Record<string, string> = {
+    'visualizar': 'visibility',
+    'editar': 'edit',
+    'excluir': 'delete',
+    'adicionar': 'add',
+    'exportar': 'download'
+  };
+
+  return iconMap[action] || 'more_vert';
 } 

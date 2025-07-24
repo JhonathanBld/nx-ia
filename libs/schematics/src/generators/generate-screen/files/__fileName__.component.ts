@@ -1,143 +1,127 @@
 import { Component, OnInit } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatChipsModule } from '@angular/material/chips';
-import { FormsModule } from '@angular/forms';
+<% if (requiredImports.includes('CommonModule')) { %>import { CommonModule } from '@angular/common';<% } %>
+<% if (requiredImports.includes('FormsModule')) { %>import { FormsModule, ReactiveFormsModule } from '@angular/forms';<% } %>
+<% if (requiredImports.includes('MatCardModule')) { %>import { MatCardModule } from '@angular/material/card';<% } %>
+<% if (requiredImports.includes('MatTableModule')) { %>import { MatTableModule } from '@angular/material/table';<% } %>
+<% if (requiredImports.includes('MatButtonModule')) { %>import { MatButtonModule } from '@angular/material/button';<% } %>
+<% if (requiredImports.includes('MatIconModule')) { %>import { MatIconModule } from '@angular/material/icon';<% } %>
+<% if (requiredImports.includes('MatInputModule')) { %>import { MatInputModule } from '@angular/material/input';<% } %>
+<% if (requiredImports.includes('MatFormFieldModule')) { %>import { MatFormFieldModule } from '@angular/material/form-field';<% } %>
+<% if (requiredImports.includes('MatExpansionModule')) { %>import { MatExpansionModule } from '@angular/material/expansion';<% } %>
+<% if (requiredImports.includes('MatPaginatorModule')) { %>import { MatPaginatorModule } from '@angular/material/paginator';<% } %>
+<% if (requiredImports.includes('MatSortModule')) { %>import { MatSortModule } from '@angular/material/sort';<% } %>
+<% if (requiredImports.includes('MatMenuModule')) { %>import { MatMenuModule } from '@angular/material/menu';<% } %>
 
 @Component({
   selector: 'app-<%= fileName %>',
   standalone: true,
   imports: [
-    MatCardModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatChipsModule,
-    FormsModule
+    <% requiredImports.forEach(function(importName, index) { %>
+    <%= importName %><% if (index < requiredImports.length - 1) { %>,<% } %>
+    <% }); %>
   ],
-  template: `
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>📋 <%= className %></mat-card-title>
-        <mat-card-subtitle>Gerenciamento de <%= className %></mat-card-subtitle>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <div class="search-container">
-          <mat-form-field appearance="outline" class="search-field">
-            <mat-label>🔍 Buscar <%= fileName %></mat-label>
-            <input matInput [(ngModel)]="searchTerm" placeholder="Digite para buscar...">
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
-          
-          <button mat-raised-button color="primary" class="add-button">
-            <mat-icon>add</mat-icon>
-            Adicionar <%= className %>
-          </button>
-        </div>
-
-        <table mat-table [dataSource]="items" class="items-table">
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let item">{{item.id}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="nome">
-            <th mat-header-cell *matHeaderCellDef>Nome</th>
-            <td mat-cell *matCellDef="let item">{{item.nome}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let item">{{item.email}}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Status</th>
-            <td mat-cell *matCellDef="let item">
-              <span class="status-badge" [class.active]="item.ativo">
-                {{item.ativo ? 'Ativo' : 'Inativo'}}
-              </span>
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="acoes">
-            <th mat-header-cell *matHeaderCellDef>Ações</th>
-            <td mat-cell *matCellDef="let item">
-              <button mat-icon-button color="primary" matTooltip="Editar">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" matTooltip="Excluir">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
-  `,
-  styles: [`
-    .search-container {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 24px;
-      align-items: center;
-    }
-
-    .search-field {
-      flex: 1;
-      max-width: 400px;
-    }
-
-    .add-button {
-      height: 56px;
-    }
-
-    .items-table {
-      width: 100%;
-    }
-
-    .status-badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 500;
-      background: #ffebee;
-      color: #c62828;
-    }
-
-    .status-badge.active {
-      background: #e8f5e8;
-      color: #2e7d32;
-    }
-
-    mat-card {
-      margin: 16px;
-    }
-  `]
+  templateUrl: './<%= fileName %>.component.html',
+  styleUrls: ['./<%= fileName %>.component.scss']
 })
 export class <%= className %>Component implements OnInit {
   searchTerm = '';
-  displayedColumns: string[] = ['id', 'nome', 'email', 'status', 'acoes'];
   
-  items = [
-    { id: 1, nome: 'Item 1', email: 'item1@exemplo.com', ativo: true },
-    { id: 2, nome: 'Item 2', email: 'item2@exemplo.com', ativo: true },
-    { id: 3, nome: 'Item 3', email: 'item3@exemplo.com', ativo: false }
+  <% if (features.includes('tabela')) { %>
+  displayedColumns: string[] = [
+    <% if (columns && columns.length > 0) { %>
+      <% columns.forEach(function(column, index) { %>
+      '<%= column %>'<% if (index < columns.length - 1) { %>,<% } %>
+      <% }); %>
+    <% } else { %>
+    'id', 'nome', 'status'
+    <% } %>
+    <% if (features.includes('acoes')) { %>, 'acoes'<% } %>
+  ];
+  <% } %>
+
+  <% if (features.includes('filtros')) { %>
+  filters: any = {
+    <% if (filters && filters.length > 0) { %>
+      <% filters.forEach(function(filter, index) { %>
+      <%= filter %>: ''<% if (index < filters.length - 1) { %>,<% } %>
+      <% }); %>
+    <% } else { %>
+    nome: '',
+    status: ''
+    <% } %>
+  };
+  <% } %>
+
+  <% if (features.includes('tabela')) { %>
+  items: any[] = [
+    <% if (columns && columns.length > 0) { %>
+      <% columns.forEach(function(column, index) { %>
+      { 
+        <% columns.forEach(function(col, colIndex) { %>
+        <%= col %>: '<%= getColumnDisplayName(col) %> <%= index + 1 %>'<% if (colIndex < columns.length - 1) { %>,<% } %>
+        <% }); %>
+      }<% if (index < 2) { %>,<% } %>
+      <% }); %>
+    <% } else { %>
+    { id: 1, nome: 'Item 1', status: 'Ativo' },
+    { id: 2, nome: 'Item 2', status: 'Inativo' },
+    { id: 3, nome: 'Item 3', status: 'Ativo' }
+    <% } %>
   ];
 
-  constructor() { }
+  totalItems = 0;
+  pageSize = 10;
+  <% } %>
 
   ngOnInit(): void {
     console.log('<%= className %> component initialized');
+    <% if (features.includes('tabela')) { %>
+    this.loadData();
+    <% } %>
   }
+
+  <% if (features.includes('tabela')) { %>
+  loadData() {
+    console.log('Carregando dados...');
+    this.totalItems = this.items.length;
+  }
+  <% } %>
+
+  <% if (features.includes('filtros')) { %>
+  applyFilters() {
+    console.log('Aplicando filtros:', this.filters);
+  }
+
+  clearFilters() {
+    this.filters = {};
+    this.searchTerm = '';
+    console.log('Filtros limpos');
+  }
+  <% } %>
+
+  <% if (features.includes('acoes')) { %>
+  openCreateDialog() {
+    console.log('Abrindo dialog de criação');
+  }
+
+  <% if (actions && actions.length > 0) { %>
+    <% actions.forEach(function(action) { %>
+  <%= action %>Item(item: any) {
+    console.log('<%= getActionDisplayName(action) %> item:', item);
+  }
+    <% }); %>
+  <% } else { %>
+  editItem(item: any) {
+    console.log('Editando item:', item);
+  }
+
+  deleteItem(item: any) {
+    console.log('Excluindo item:', item);
+  }
+
+  viewItem(item: any) {
+    console.log('Visualizando item:', item);
+  }
+  <% } %>
+  <% } %>
 } 

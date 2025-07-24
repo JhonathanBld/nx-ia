@@ -11,7 +11,6 @@ import { updateShellMenu } from '../generate-screen/update-shell-menu';
 interface HybridGeneratorSchema {
   name: string;
   project?: string;
-  prompt: string;
   features?: string[];
   columns?: string[];
   filters?: string[];
@@ -19,8 +18,29 @@ interface HybridGeneratorSchema {
   forceAI?: boolean;
   forceNx?: boolean;
   generateDocs?: boolean;
-  detailedPrompt?: string;
+  prompt?: string;
   generateDetailedDocs?: boolean;
+  // Propriedades internas para controle
+  shouldUseAI?: boolean;
+  requireDetailedPrompt?: boolean;
+  // Novos campos dinâmicos baseados nas features
+  cardMetrics?: Array<{
+    title: string;
+    value: string;
+    icon: string;
+    color: string;
+  }>;
+  chartTypes?: string[];
+  chartData?: string;
+  modalType?: string;
+  modalFields?: string[];
+  formFields?: Array<{
+    name: string;
+    type: string;
+    label: string;
+    required: boolean;
+  }>;
+  exportFormats?: string[];
 }
 
 export default async function (tree: Tree, schema: HybridGeneratorSchema) {
@@ -42,21 +62,27 @@ export default async function (tree: Tree, schema: HybridGeneratorSchema) {
   // Validar opções baseado nas features selecionadas
   const validatedSchema = validateSchemaOptions(schema);
 
-  // Analisar o prompt para decidir entre Nx e IA
-  const analysis = analyzePromptForHybrid(schema.prompt);
-  const shouldUseAI = validatedSchema.forceAI || (!validatedSchema.forceNx && analysis.shouldUseAI);
+  // Se forceAI for true, sempre usar IA e solicitar prompt detalhado
+  if (validatedSchema.forceAI) {
+    validatedSchema.shouldUseAI = true;
+    validatedSchema.requireDetailedPrompt = true;
+  }
+
+  // Determinar se deve usar IA baseado nas features e configurações
+  const shouldUseAI = determineIfShouldUseAI(validatedSchema);
 
   console.log(`🔍 Análise do prompt:`);
-  console.log(`   - Features detectadas: ${analysis.features.join(', ')}`);
-  console.log(`   - Complexidade: ${analysis.complexity}`);
+  console.log(`   - Features selecionadas: ${validatedSchema.features?.join(', ')}`);
+  console.log(`   - Forçar IA: ${validatedSchema.forceAI}`);
+  console.log(`   - Forçar Nx: ${validatedSchema.forceNx}`);
   console.log(`   - Recomendação: ${shouldUseAI ? 'IA 🤖' : 'Nx ⚡'}`);
 
   if (shouldUseAI) {
     console.log(`🤖 Usando IA para gerar componente avançado...`);
-    await generateWithAI(tree, validatedSchema, normalizedNames, targetPath, analysis);
+    await generateWithAI(tree, validatedSchema, normalizedNames, targetPath);
   } else {
     console.log(`⚡ Usando Nx para gerar componente básico...`);
-    await generateWithNx(tree, validatedSchema, normalizedNames, targetPath, analysis);
+    await generateWithNx(tree, validatedSchema, normalizedNames, targetPath);
   }
 
   // Atualizar menu do shell
@@ -69,7 +95,7 @@ export default async function (tree: Tree, schema: HybridGeneratorSchema) {
 
   // Gerar documentação automática se solicitado
   if (validatedSchema.generateDocs !== false) {
-    await generateDocumentation(tree, normalizedNames.fileName, schema.prompt, analysis, validatedSchema);
+    await generateDocumentation(tree, normalizedNames.fileName, validatedSchema, shouldUseAI);
   }
 
   await formatFiles(tree);
@@ -97,94 +123,71 @@ function validateSchemaOptions(schema: HybridGeneratorSchema): HybridGeneratorSc
   if (!validatedSchema.features.includes('acoes')) {
     delete validatedSchema.actions;
   }
+
+  // Se não há cards selecionados, remover métricas de cards
+  if (!validatedSchema.features.includes('cards')) {
+    delete validatedSchema.cardMetrics;
+  }
+
+  // Se não há gráficos selecionados, remover configurações de gráficos
+  if (!validatedSchema.features.includes('graficos')) {
+    delete validatedSchema.chartTypes;
+    delete validatedSchema.chartData;
+  }
+
+  // Se não há modal selecionado, remover configurações de modal
+  if (!validatedSchema.features.includes('modal')) {
+    delete validatedSchema.modalType;
+    delete validatedSchema.modalFields;
+  }
+
+  // Se não há formulário selecionado, remover campos do formulário
+  if (!validatedSchema.features.includes('formulario')) {
+    delete validatedSchema.formFields;
+  }
+
+  // Se não há exportação selecionada, remover formatos de exportação
+  if (!validatedSchema.features.includes('exportacao')) {
+    delete validatedSchema.exportFormats;
+  }
   
   return validatedSchema;
 }
 
-function analyzePromptForHybrid(prompt: string) {
-  const lowerPrompt = prompt.toLowerCase();
+function determineIfShouldUseAI(schema: HybridGeneratorSchema): boolean {
+  // Se forçar IA, usar IA
+  if (schema.forceAI) {
+    return true;
+  }
+
+  // Se forçar Nx, usar Nx
+  if (schema.forceNx) {
+    return false;
+  }
+
+  // Se não há features, usar Nx
+  if (!schema.features || schema.features.length === 0) {
+    return false;
+  }
+
+  // Features avançadas que requerem IA
+  const advancedFeatures = ['cards', 'graficos', 'modal', 'exportacao', 'responsivo'];
   
-  const analysis = {
-    features: [] as string[],
-    complexity: 'basic' as 'basic' | 'intermediate' | 'advanced',
-    shouldUseAI: false,
-    nxFeatures: [] as string[],
-    aiFeatures: [] as string[]
-  };
-
-  // Detectar features básicas (Nx)
-  if (lowerPrompt.includes('filtro') || lowerPrompt.includes('busca')) {
-    analysis.features.push('filtros');
-    analysis.nxFeatures.push('filtros');
+  // Se há features avançadas, usar IA
+  if (schema.features.some(feature => advancedFeatures.includes(feature))) {
+    return true;
   }
 
-  if (lowerPrompt.includes('tabela') || lowerPrompt.includes('lista') || lowerPrompt.includes('crud')) {
-    analysis.features.push('tabela');
-    analysis.nxFeatures.push('tabela');
+  // Se há muitas features básicas (mais de 3), usar IA
+  if (schema.features.length > 3) {
+    return true;
   }
 
-  if (lowerPrompt.includes('formulário') || lowerPrompt.includes('form')) {
-    analysis.features.push('formulario');
-    analysis.nxFeatures.push('formulario');
-  }
-
-  // Detectar features avançadas (IA)
-  if (lowerPrompt.includes('gráfico') || lowerPrompt.includes('chart') || lowerPrompt.includes('barras') || lowerPrompt.includes('pizza')) {
-    analysis.features.push('graficos');
-    analysis.aiFeatures.push('graficos');
-    analysis.shouldUseAI = true;
-  }
-
-  if (lowerPrompt.includes('cards') || lowerPrompt.includes('métricas') || lowerPrompt.includes('dashboard')) {
-    analysis.features.push('cards');
-    analysis.aiFeatures.push('cards');
-    analysis.shouldUseAI = true;
-  }
-
-  if (lowerPrompt.includes('modal') || lowerPrompt.includes('dialog')) {
-    analysis.features.push('modal');
-    analysis.aiFeatures.push('modal');
-    analysis.shouldUseAI = true;
-  }
-
-  if (lowerPrompt.includes('exportação') || lowerPrompt.includes('excel') || lowerPrompt.includes('pdf')) {
-    analysis.features.push('exportacao');
-    analysis.aiFeatures.push('exportacao');
-    analysis.shouldUseAI = true;
-  }
-
-  if (lowerPrompt.includes('responsivo') || lowerPrompt.includes('mobile')) {
-    analysis.features.push('responsivo');
-    analysis.aiFeatures.push('responsivo');
-    analysis.shouldUseAI = true;
-  }
-
-  if (lowerPrompt.includes('stepper') || lowerPrompt.includes('wizard')) {
-    analysis.features.push('stepper');
-    analysis.aiFeatures.push('stepper');
-    analysis.shouldUseAI = true;
-  }
-
-  // Determinar complexidade
-  if (analysis.aiFeatures.length > 0) {
-    analysis.complexity = 'advanced';
-  } else if (analysis.nxFeatures.length > 2) {
-    analysis.complexity = 'intermediate';
-  } else {
-    analysis.complexity = 'basic';
-  }
-
-  // Decidir se deve usar IA
-  if (analysis.aiFeatures.length > 0) {
-    analysis.shouldUseAI = true;
-  } else if (analysis.nxFeatures.length > 3) {
-    analysis.shouldUseAI = true; // Muitas features = usar IA
-  }
-
-  return analysis;
+  // Caso contrário, usar Nx
+  return false;
 }
 
-async function generateWithNx(tree: Tree, schema: HybridGeneratorSchema, normalizedNames: any, targetPath: string, analysis: any) {
+async function generateWithNx(tree: Tree, schema: HybridGeneratorSchema, normalizedNames: any, targetPath: string) {
   // Usar o generator básico do Nx
   const templateData = {
     ...normalizedNames,
@@ -192,13 +195,21 @@ async function generateWithNx(tree: Tree, schema: HybridGeneratorSchema, normali
     fileName: normalizedNames.fileName,
     constantName: normalizedNames.constantName,
     projectName: schema.project || 'dashboard',
-    features: analysis.nxFeatures,
+    features: schema.features || [],
     displayName: getDisplayName(normalizedNames.fileName),
-    icon: getIconForScreen(normalizedNames.fileName)
+    icon: getIconForScreen(normalizedNames.fileName),
+    // Dados específicos das features
+    columns: schema.columns || [],
+    filters: schema.filters || [],
+    actions: schema.actions || [],
+    // Funções auxiliares para templates
+    getColumnDisplayName: getColumnDisplayName,
+    getActionDisplayName: getActionDisplayName,
+    getActionIcon: getActionIcon
   };
 
   // Gerar apenas os imports necessários
-  const requiredImports = getRequiredImports(analysis.nxFeatures);
+  const requiredImports = getRequiredImports(schema.features || []);
   
   generateFiles(tree, joinPathFragments('libs/schematics/src/generators/hybrid-generator/files/nx'), targetPath, {
     ...templateData,
@@ -206,9 +217,9 @@ async function generateWithNx(tree: Tree, schema: HybridGeneratorSchema, normali
   });
 }
 
-async function generateWithAI(tree: Tree, schema: HybridGeneratorSchema, normalizedNames: any, targetPath: string, analysis: any) {
+async function generateWithAI(tree: Tree, schema: HybridGeneratorSchema, normalizedNames: any, targetPath: string) {
   // Usar análise avançada da IA
-  const aiAnalysis = analyzePromptAdvanced(schema.detailedPrompt || schema.prompt);
+  const aiAnalysis = analyzePromptAdvanced(schema.prompt || '');
   
   const templateData = {
     ...normalizedNames,
@@ -216,27 +227,35 @@ async function generateWithAI(tree: Tree, schema: HybridGeneratorSchema, normali
     fileName: normalizedNames.fileName,
     constantName: normalizedNames.constantName,
     projectName: schema.project || 'dashboard',
-    prompt: schema.detailedPrompt || schema.prompt, // Usar prompt detalhado se disponível
-    features: analysis.features,
-    columns: aiAnalysis.columns,
-    filters: aiAnalysis.filters,
-    actions: aiAnalysis.actions,
+    prompt: schema.prompt || '',
+    features: schema.features || [],
+    columns: schema.columns || aiAnalysis.columns,
+    filters: schema.filters || aiAnalysis.filters,
+    actions: schema.actions || aiAnalysis.actions,
     metrics: aiAnalysis.metrics,
     charts: aiAnalysis.charts,
     displayName: getDisplayName(normalizedNames.fileName),
     icon: getIconForScreen(normalizedNames.fileName),
     getColumnDisplayName: getColumnDisplayName,
-    requiredImports: getRequiredImports(analysis.features),
-    detailedPrompt: schema.detailedPrompt // Passar prompt detalhado para templates
+    getActionDisplayName: getActionDisplayName,
+    getActionIcon: getActionIcon,
+    requiredImports: getRequiredImports(schema.features || []),
+    // Novos dados específicos das features
+    cardMetrics: schema.cardMetrics || [],
+    chartTypes: schema.chartTypes || [],
+    chartData: schema.chartData || '',
+    modalType: schema.modalType || 'formulario',
+    modalFields: schema.modalFields || [],
+    formFields: schema.formFields || [],
+    exportFormats: schema.exportFormats || []
   };
 
   generateFiles(tree, joinPathFragments('libs/schematics/src/generators/hybrid-generator/files/ai'), targetPath, templateData);
 }
 
-async function generateDocumentation(tree: Tree, componentName: string, prompt: string, analysis: any, schema: HybridGeneratorSchema) {
+async function generateDocumentation(tree: Tree, componentName: string, schema: HybridGeneratorSchema, shouldUseAI: boolean) {
   const timestamp = new Date().toISOString().split('T')[0];
   const fileName = componentName.toLowerCase().replace(/\s+/g, '-');
-  const shouldUseAI = analysis.shouldUseAI || schema.forceAI;
   
   // Documentação básica (sempre gerada)
   const basicMarkdown = `# Análise de Prompt - ${componentName}
@@ -245,30 +264,27 @@ async function generateDocumentation(tree: Tree, componentName: string, prompt: 
 
 - **Data**: ${timestamp}
 - **Componente**: ${componentName}
-- **Prompt**: "${prompt}"
-- **Complexidade**: ${analysis.complexity}
+- **Prompt**: "${schema.prompt || 'N/A'}"
+- **Features**: ${schema.features?.join(', ') || 'N/A'}
 - **Recomendação**: ${shouldUseAI ? '🤖 IA' : '⚡ Nx'}
 
 ## 🔍 Análise Detalhada
 
-### Features Detectadas
-${analysis.features.map((f: string) => `- ✅ ${f}`).join('\n')}
+### Features Selecionadas
+${schema.features?.map((f: string) => `- ✅ ${f}`).join('\n') || '- Nenhuma feature selecionada'}
 
-### Features Nx (Básicas)
-${analysis.nxFeatures.map((f: string) => `- ⚡ ${f}`).join('\n')}
-
-### Features IA (Avançadas)
-${analysis.aiFeatures.map((f: string) => `- 🤖 ${f}`).join('\n')}
+### Configurações Específicas
+${getSpecificConfigurations(schema)}
 
 ## 🎯 Recomendação
 
 ### ${shouldUseAI ? '🤖 Usar IA (Avançado)' : '⚡ Usar Nx (Básico)'}
 
-**Motivo**: ${shouldUseAI ? 'Features avançadas detectadas que requerem análise inteligente de prompts.' : 'Features básicas que podem ser geradas rapidamente pelo Nx.'}
+**Motivo**: ${shouldUseAI ? 'Features avançadas ou muitas features básicas detectadas que requerem análise inteligente.' : 'Features básicas que podem ser geradas rapidamente pelo Nx.'}
 
 **Comando Executado**:
 \`\`\`bash
-npx nx g ./dist/libs/schematics:hybrid-generator ${fileName} --prompt="${prompt}" ${shouldUseAI ? '--forceAI=true' : '--forceNx=true'}
+npx nx g ./dist/libs/schematics:hybrid-generator ${fileName} --features="${schema.features?.join(',')}" ${shouldUseAI ? '--forceAI=true' : '--forceNx=true'}
 \`\`\`
 
 **Benefícios**:
@@ -294,10 +310,9 @@ apps/dashboard/src/app/${fileName}/
 
 ## 📊 Estatísticas
 
-- **Total de Features**: ${analysis.features.length}
-- **Features Nx**: ${analysis.nxFeatures.length}
-- **Features IA**: ${analysis.aiFeatures.length}
-- **Nível de Complexidade**: ${analysis.complexity}
+- **Total de Features**: ${schema.features?.length || 0}
+- **Features Básicas**: ${schema.features?.filter(f => ['filtros', 'tabela', 'acoes', 'formulario'].includes(f)).length || 0}
+- **Features Avançadas**: ${schema.features?.filter(f => ['cards', 'graficos', 'modal', 'exportacao', 'responsivo'].includes(f)).length || 0}
 
 ## 🎯 Próximos Passos
 
@@ -322,139 +337,254 @@ apps/dashboard/src/app/${fileName}/
   }
 
   // Se usar IA e tiver prompt detalhado, gerar documentação específica para Copilot
-  if (shouldUseAI && schema.detailedPrompt && schema.generateDetailedDocs) {
-    await generateDetailedDocumentation(tree, componentName, schema, analysis);
+  if (shouldUseAI && schema.prompt && (schema.generateDetailedDocs || schema.forceAI)) {
+    await generateDetailedDocumentation(tree, componentName, schema);
   }
 }
 
-async function generateDetailedDocumentation(tree: Tree, componentName: string, schema: HybridGeneratorSchema, analysis: any) {
+function getSpecificConfigurations(schema: HybridGeneratorSchema): string {
+  const configs: string[] = [];
+
+  if (schema.columns?.length) {
+    configs.push(`**Colunas da Tabela**: ${schema.columns.join(', ')}`);
+  }
+
+  if (schema.filters?.length) {
+    configs.push(`**Filtros**: ${schema.filters.join(', ')}`);
+  }
+
+  if (schema.actions?.length) {
+    configs.push(`**Ações**: ${schema.actions.join(', ')}`);
+  }
+
+  if (schema.cardMetrics?.length) {
+    configs.push(`**Métricas dos Cards**: ${schema.cardMetrics.map(m => m.title).join(', ')}`);
+  }
+
+  if (schema.chartTypes?.length) {
+    configs.push(`**Tipos de Gráficos**: ${schema.chartTypes.join(', ')}`);
+  }
+
+  if (schema.modalType) {
+    configs.push(`**Tipo de Modal**: ${schema.modalType}`);
+  }
+
+  if (schema.formFields?.length) {
+    configs.push(`**Campos do Formulário**: ${schema.formFields.map(f => f.name).join(', ')}`);
+  }
+
+  if (schema.exportFormats?.length) {
+    configs.push(`**Formatos de Exportação**: ${schema.exportFormats.join(', ')}`);
+  }
+
+  return configs.length > 0 ? configs.join('\n') : '- Nenhuma configuração específica';
+}
+
+async function generateDetailedDocumentation(tree: Tree, componentName: string, schema: HybridGeneratorSchema) {
   const timestamp = new Date().toISOString().split('T')[0];
   const fileName = componentName.toLowerCase().replace(/\s+/g, '-');
   
-  const detailedMarkdown = `# Especificação Detalhada - ${componentName}
+  const detailedMarkdown = `# 🚀 Especificação para IA/Copilot - ${componentName}
 
-## 📋 Informações do Projeto
+## 📋 Contexto do Projeto
 
 - **Data**: ${timestamp}
 - **Componente**: ${componentName}
-- **Prompt Básico**: "${schema.prompt}"
-- **Prompt Detalhado**: "${schema.detailedPrompt}"
-- **Features**: ${schema.features?.join(', ') || 'N/A'}
-- **Gerador**: IA 🤖
+- **Prompt Original**: "${schema.prompt}"
+- **Features Selecionadas**: ${schema.features?.join(', ') || 'N/A'}
+- **Forçar IA**: ${schema.forceAI ? '✅ Sim' : '❌ Não'}
+- **Gerador**: Sistema Híbrido IA + Nx
 
-## 🎯 Especificação para Copilot
+## 🎯 Instruções para IA/Copilot
 
-### 📝 Prompt Detalhado
+### 📝 Tarefa Principal
+Você deve implementar um componente Angular completo baseado na seguinte especificação:
+
+**Prompt do Usuário:**
 \`\`\`
-${schema.detailedPrompt}
+${schema.prompt}
 \`\`\`
 
-### 🏗️ Estrutura Esperada
+### 🏗️ Estrutura Técnica Esperada
 
-#### Componente TypeScript
+#### 📁 Estrutura de Arquivos
+\`\`\`
+apps/dashboard/src/app/${fileName}/
+├── ${fileName}.component.ts      # Lógica principal
+├── ${fileName}.component.html    # Template
+├── ${fileName}.component.scss    # Estilos
+└── ${fileName}.component.spec.ts # Testes
+\`\`\`
+
+#### 🔧 Tecnologias Obrigatórias
+- **Angular 17+** (standalone components)
+- **Angular Material** (UI components)
+- **TypeScript** (tipagem forte)
+- **SCSS** (estilos)
+- **RxJS** (reactive programming)
+
+### 🎨 Especificações de Design
+
+#### 🎯 Features Implementadas
+${schema.features?.map(feature => {
+  switch(feature) {
+    case 'cards':
+      return `#### 📊 Cards de Métricas
+- **Layout**: Grid responsivo com Material Grid List
+- **Componentes**: MatCard, MatIcon, MatGridList
+- **Funcionalidades**: 
+  - Métricas: ${schema.cardMetrics?.map(m => m.title).join(', ') || 'Total, Média, Contagem'}
+  - Ícones dinâmicos
+  - Cores temáticas
+  - Animações suaves
+- **Dados**: Simular dados realistas`;
+    case 'graficos':
+      return `#### 📈 Gráficos Interativos
+- **Tipos**: ${schema.chartTypes?.join(', ') || 'Barra, Pizza, Linha'}
+- **Biblioteca**: Chart.js ou ng2-charts
+- **Funcionalidades**:
+  - Dados: ${schema.chartData || 'Vendas, Categorias, Períodos'}
+  - Interatividade (hover, click)
+  - Responsividade
+  - Legendas dinâmicas
+- **Implementação**: Usar MatCard como container`;
+    case 'filtros':
+      return `#### 🔍 Filtros Avançados
+- **Componentes**: MatExpansionPanel, MatFormField, MatInput
+- **Funcionalidades**:
+  - Filtros: ${schema.filters?.join(', ') || 'Nome, Status, Data'}
+  - Datepicker para períodos
+  - Selects múltiplos
+  - Chips para seleção
+  - Busca em tempo real
+- **UX**: Painel expansível, botões de ação`;
+    case 'tabela':
+      return `#### 📋 Tabela Dinâmica
+- **Componentes**: MatTable, MatPaginator, MatSort
+- **Funcionalidades**:
+  - Colunas: ${schema.columns?.join(', ') || 'ID, Nome, Status'}
+  - Ordenação por colunas
+  - Paginação
+  - Ações por linha
+  - Seleção múltipla
+- **Dados**: Simular dados com interface TypeScript`;
+    case 'modal':
+      return `#### 🪟 Modais Inteligentes
+- **Tipo**: ${schema.modalType || 'formulario'}
+- **Componentes**: MatDialog, MatDialogRef
+- **Funcionalidades**:
+  - Campos: ${schema.modalFields?.join(', ') || 'Nome, Email, Telefone'}
+  - Formulários reativos
+  - Validação em tempo real
+  - Upload de arquivos
+  - Confirmações
+- **UX**: Animações suaves, backdrop`;
+    case 'formulario':
+      return `#### 📝 Formulários Reativos
+- **Campos**: ${schema.formFields?.map(f => f.name).join(', ') || 'Nome, Email, Senha'}
+- **Validação**: ReactiveFormsModule
+- **Tipos**: Text, Email, Number, Date, Select
+- **UX**: Feedback visual, mensagens de erro
+- **Acessibilidade**: Labels, aria-labels`;
+    case 'exportacao':
+      return `#### 📤 Exportação de Dados
+- **Formatos**: ${schema.exportFormats?.join(', ') || 'Excel, PDF, CSV'}
+- **Funcionalidades**:
+  - Botões de exportação
+  - Filtros aplicados
+  - Nome de arquivo dinâmico
+  - Progress indicator
+- **Implementação**: Usar bibliotecas como xlsx, jsPDF`;
+    case 'responsivo':
+      return `#### 📱 Responsividade Total
+- **Breakpoints**: Mobile, Tablet, Desktop
+- **Layout**: Flexbox/Grid adaptativo
+- **Navegação**: Touch-friendly
+- **Cards**: Empilhados em mobile
+- **Tabela**: Scroll horizontal em telas pequenas`;
+    default:
+      return `#### ⚙️ ${feature.charAt(0).toUpperCase() + feature.slice(1)}
+- Implementar funcionalidade específica conforme prompt`;
+  }
+}).join('\n\n')}
+
+### 🎯 Instruções Detalhadas para Implementação
+
+#### 1️⃣ **Análise do Prompt**
+- Leia cuidadosamente o prompt do usuário
+- Identifique todas as funcionalidades solicitadas
+- Mapeie para as features selecionadas
+- Considere casos de uso específicos
+
+#### 2️⃣ **Estrutura do Componente**
 \`\`\`typescript
-// ${componentName}.component.ts
-import { Component, OnInit } from '@angular/core';
-// Imports necessários baseados nas features: ${schema.features?.join(', ')}
-
 @Component({
   selector: 'app-${fileName}',
+  standalone: true,
+  imports: [
+    // Imports baseados nas features
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    // Material modules específicos
+  ],
   templateUrl: './${fileName}.component.html',
   styleUrls: ['./${fileName}.component.scss']
 })
 export class ${componentName}Component implements OnInit {
-  // Implementar lógica baseada no prompt detalhado
+  // Propriedades baseadas nas features
+  // Métodos de lógica de negócio
+  // Dados simulados realistas
 }
 \`\`\`
 
-#### Template HTML
-\`\`\`html
-<!-- ${fileName}.component.html -->
-<!-- Implementar template baseado no prompt detalhado -->
-\`\`\`
+#### 3️⃣ **Template HTML**
+- Use Angular Material components
+- Implemente layout responsivo
+- Adicione animações suaves
+- Siga padrões de acessibilidade
+- Use *ngIf e *ngFor adequadamente
 
-#### Estilos SCSS
-\`\`\`scss
-/* ${fileName}.component.scss */
-/* Implementar estilos baseados no prompt detalhado */
-\`\`\`
+#### 4️⃣ **Estilos SCSS**
+- Design moderno e limpo
+- Cores consistentes com tema
+- Responsividade com media queries
+- Animações CSS suaves
+- Estados hover/focus
 
-### 🎨 Features Específicas
+#### 5️⃣ **Dados Simulados**
+- Crie interfaces TypeScript
+- Simule dados realistas
+- Implemente métodos de CRUD
+- Use observables quando apropriado
 
-${schema.features?.map(feature => {
-  switch(feature) {
-    case 'cards':
-      return `#### Cards de Métricas
-- Layout responsivo com grid
-- Ícones e indicadores
-- Animações suaves
-- Cores temáticas`;
-    case 'graficos':
-      return `#### Gráficos
-- Gráficos de barras, pizza, linha
-- Dados simulados realistas
-- Interatividade
-- Responsividade`;
-    case 'filtros':
-      return `#### Filtros Avançados
-- Datepicker para períodos
-- Selects múltiplos
-- Chips para seleção
-- Busca em tempo real`;
-    case 'tabela':
-      return `#### Tabela Dinâmica
-- Ordenação por colunas
-- Paginação
-- Ações por linha
-- Seleção múltipla`;
-    case 'modal':
-      return `#### Modais
-- Formulários de criação/edição
-- Confirmações de exclusão
-- Upload de arquivos
-- Validação em tempo real`;
-    case 'exportacao':
-      return `#### Exportação
-- Botão de exportar Excel
-- Botão de exportar PDF
-- Filtros aplicados na exportação
-- Nome de arquivo dinâmico`;
-    case 'responsivo':
-      return `#### Responsividade
-- Layout adaptativo
-- Breakpoints para mobile
-- Navegação touch-friendly
-- Cards empilhados em telas pequenas`;
-    default:
-      return `#### ${feature.charAt(0).toUpperCase() + feature.slice(1)}
-- Implementar funcionalidade específica`;
-  }
-}).join('\n\n') || '#### Funcionalidades Básicas\n- Implementar conforme prompt'}
+### 📋 Checklist de Qualidade
 
-### 🎯 Instruções para Copilot
-
-1. **Analise o prompt detalhado** e implemente exatamente o que foi solicitado
-2. **Use Angular Material** para todos os componentes
-3. **Implemente responsividade** se solicitado
-4. **Adicione animações** suaves onde apropriado
-5. **Use dados simulados** realistas
-6. **Implemente validações** onde necessário
-7. **Siga padrões de acessibilidade**
-8. **Use TypeScript** com tipos apropriados
-
-### 📋 Checklist de Implementação
-
-- [ ] Componente TypeScript com lógica completa
-- [ ] Template HTML com layout responsivo
-- [ ] Estilos SCSS com design moderno
-- [ ] Testes unitários básicos
-- [ ] Imports corretos do Angular Material
-- [ ] Dados simulados realistas
-- [ ] Funcionalidades específicas implementadas
+#### ✅ **Funcionalidade**
+- [ ] Todas as features implementadas
+- [ ] Dados simulados funcionais
+- [ ] Validações implementadas
 - [ ] Responsividade testada
-- [ ] Acessibilidade verificada
 
-### 🚀 Comandos Úteis
+#### ✅ **Código**
+- [ ] TypeScript com tipos corretos
+- [ ] Imports otimizados
+- [ ] Métodos bem estruturados
+- [ ] Nomenclatura consistente
+
+#### ✅ **UI/UX**
+- [ ] Design moderno
+- [ ] Animações suaves
+- [ ] Feedback visual
+- [ ] Acessibilidade
+
+#### ✅ **Performance**
+- [ ] Lazy loading quando apropriado
+- [ ] Otimização de imports
+- [ ] Dados paginados
+- [ ] Debounce em filtros
+
+### 🚀 Comandos de Desenvolvimento
 
 \`\`\`bash
 # Servir aplicação
@@ -465,11 +595,22 @@ npx nx test dashboard
 
 # Build do projeto
 npx nx build dashboard
+
+# Lint do código
+npx nx lint dashboard
 \`\`\`
+
+### 📚 Recursos Úteis
+
+- **Angular Material**: https://material.angular.io/
+- **Angular Docs**: https://angular.io/docs
+- **TypeScript**: https://www.typescriptlang.org/docs/
+- **RxJS**: https://rxjs.dev/guide/overview
 
 ---
 
-*Documentação detalhada gerada para Copilot - Sistema Híbrido IA + Nx*
+*Documentação gerada automaticamente para IA/Copilot - Sistema Híbrido IA + Nx*
+*Data: ${timestamp}*
 `;
 
   // Salvar arquivo MD detalhado
@@ -628,4 +769,28 @@ function getColumnDisplayName(column: string): string {
   };
 
   return displayMap[column] || column.charAt(0).toUpperCase() + column.slice(1);
+}
+
+function getActionDisplayName(action: string): string {
+  const displayMap: Record<string, string> = {
+    'visualizar': 'Visualizar',
+    'editar': 'Editar',
+    'excluir': 'Excluir',
+    'adicionar': 'Adicionar',
+    'exportar': 'Exportar'
+  };
+
+  return displayMap[action] || action.charAt(0).toUpperCase() + action.slice(1);
+}
+
+function getActionIcon(action: string): string {
+  const iconMap: Record<string, string> = {
+    'visualizar': 'visibility',
+    'editar': 'edit',
+    'excluir': 'delete',
+    'adicionar': 'add',
+    'exportar': 'download'
+  };
+
+  return iconMap[action] || 'more_vert';
 } 

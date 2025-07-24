@@ -19,11 +19,6 @@
       "default": "dashboard",
       "x-prompt": "Em qual projeto você quer criar a tela?"
     },
-    "prompt": {
-      "type": "string",
-      "description": "Descrição detalhada da funcionalidade desejada",
-      "x-prompt": "Descreva a funcionalidade que você quer criar (filtros, tabelas, gráficos, etc.)"
-    },
     "features": {
       "type": "array",
       "items": {
@@ -52,19 +47,19 @@
       "default": true,
       "x-prompt": "Gerar documentação automática?"
     },
-    "detailedPrompt": {
+    "prompt": {
       "type": "string",
-      "description": "Prompt detalhado para IA (só usado quando IA é selecionada)",
+      "description": "Descrição da funcionalidade desejada",
       "x-prompt": "Descreva detalhadamente a tela (layout, componentes, funcionalidades específicas)"
     },
     "generateDetailedDocs": {
       "type": "boolean",
-      "description": "Gerar documentação detalhada para Copilot (só quando usar IA)",
-      "default": true,
+      "description": "Gerar documentação detalhada para Copilot",
+      "default": false,
       "x-prompt": "Gerar documentação detalhada para Copilot?"
     }
   },
-  "required": ["name", "prompt"],
+  "required": ["name"],
   "allOf": [
     {
       "if": {
@@ -139,20 +134,156 @@
     },
     {
       "if": {
-        "anyOf": [
-          { "properties": { "forceAI": { "const": true } } },
-          { "properties": { "features": { "contains": { "const": "cards" } } } },
-          { "properties": { "features": { "contains": { "const": "graficos" } } } },
-          { "properties": { "features": { "contains": { "const": "modal" } } } },
-          { "properties": { "features": { "contains": { "const": "exportacao" } } } },
-          { "properties": { "features": { "contains": { "const": "responsivo" } } } }
-        ]
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "cards"
+            }
+          }
+        }
       },
       "then": {
         "properties": {
-          "detailedPrompt": {
+          "cardMetrics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "value": { "type": "string" },
+                "icon": { "type": "string" },
+                "color": { "type": "string" }
+              }
+            },
+            "description": "Métricas para cards",
+            "x-prompt": "Quais métricas você quer nos cards? (formato: título, valor, ícone, cor)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "graficos"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "chartTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["barra", "pizza", "linha", "area", "donut"]
+            },
+            "description": "Tipos de gráficos",
+            "x-prompt": "Quais tipos de gráficos você quer incluir?",
+            "default": ["barra", "pizza"]
+          },
+          "chartData": {
             "type": "string",
-            "description": "Prompt detalhado para IA (layout, componentes, funcionalidades específicas)",
+            "description": "Dados para os gráficos",
+            "x-prompt": "Descreva os dados para os gráficos (categorias, valores, etc.)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "modal"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "modalType": {
+            "type": "string",
+            "enum": ["formulario", "confirmacao", "visualizacao", "upload"],
+            "description": "Tipo de modal",
+            "x-prompt": "Qual tipo de modal você quer?",
+            "default": "formulario"
+          },
+          "modalFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Campos do modal",
+            "x-prompt": "Quais campos você quer no modal?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "formulario"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formFields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "type": { "type": "string", "enum": ["text", "email", "number", "date", "select", "textarea", "checkbox"] },
+                "label": { "type": "string" },
+                "required": { "type": "boolean" }
+              }
+            },
+            "description": "Campos do formulário",
+            "x-prompt": "Quais campos você quer no formulário? (formato: nome, tipo, label, obrigatório)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "exportacao"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exportFormats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["excel", "pdf", "csv", "json"]
+            },
+            "description": "Formatos de exportação",
+            "x-prompt": "Quais formatos de exportação você quer?",
+            "default": ["excel", "pdf"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "forceAI": { "const": true } }
+      },
+      "then": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Descrição detalhada da funcionalidade desejada",
             "x-prompt": "Descreva detalhadamente a tela (layout, componentes, funcionalidades específicas)"
           },
           "generateDetailedDocs": {
@@ -161,7 +292,62 @@
             "default": true,
             "x-prompt": "Gerar documentação detalhada para Copilot?"
           }
-        }
+        },
+        "required": ["prompt"]
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          { "properties": { "forceAI": { "const": false } } },
+          {
+            "anyOf": [
+              { "properties": { "features": { "contains": { "const": "cards" } } } },
+              { "properties": { "features": { "contains": { "const": "graficos" } } } },
+              { "properties": { "features": { "contains": { "const": "modal" } } } },
+              { "properties": { "features": { "contains": { "const": "exportacao" } } } },
+              { "properties": { "features": { "contains": { "const": "responsivo" } } } }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Descrição detalhada da funcionalidade desejada",
+            "x-prompt": "Descreva detalhadamente a tela (layout, componentes, funcionalidades específicas)"
+          },
+          "generateDetailedDocs": {
+            "type": "boolean",
+            "description": "Gerar documentação detalhada para Copilot",
+            "default": true,
+            "x-prompt": "Gerar documentação detalhada para Copilot?"
+          }
+        },
+        "required": ["prompt"]
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          { "properties": { "forceAI": { "const": false } } },
+          { "not": { "properties": { "features": { "contains": { "const": "cards" } } } } },
+          { "not": { "properties": { "features": { "contains": { "const": "graficos" } } } } },
+          { "not": { "properties": { "features": { "contains": { "const": "modal" } } } } },
+          { "not": { "properties": { "features": { "contains": { "const": "exportacao" } } } } },
+          { "not": { "properties": { "features": { "contains": { "const": "responsivo" } } } } }
+        ]
+      },
+      "then": {
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Descrição básica da funcionalidade",
+            "x-prompt": "Descreva a funcionalidade que você quer criar (filtros, tabelas, etc.)"
+          }
+        },
+        "required": ["prompt"]
       }
     }
   ]

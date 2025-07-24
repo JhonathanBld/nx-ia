@@ -16,8 +16,241 @@
     "project": {
       "type": "string",
       "description": "Nome do projeto onde a tela será criada",
-      "default": "dashboard"
+      "default": "dashboard",
+      "x-prompt": "Em qual projeto você quer criar a tela?"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["filtros", "tabela", "cards", "graficos", "modal", "formulario", "exportacao", "responsivo", "acoes"]
+      },
+      "description": "Features da tela",
+      "x-prompt": "Quais features você quer incluir?",
+      "default": ["filtros", "tabela", "acoes"]
+    },
+    "generateDocs": {
+      "type": "boolean",
+      "description": "Gerar documentação automática em markdown",
+      "default": true,
+      "x-prompt": "Gerar documentação automática?"
     }
   },
-  "required": ["name"]
+  "required": ["name"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "tabela"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Colunas da tabela",
+            "x-prompt": "Quais colunas você quer na tabela?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "filtros"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filtros da tela",
+            "x-prompt": "Quais filtros você quer incluir?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "acoes"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["visualizar", "editar", "excluir", "adicionar", "exportar"]
+            },
+            "description": "Ações disponíveis",
+            "x-prompt": "Quais ações você quer incluir?",
+            "default": ["visualizar", "editar", "excluir"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "cards"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "cardMetrics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "value": { "type": "string" },
+                "icon": { "type": "string" },
+                "color": { "type": "string" }
+              }
+            },
+            "description": "Métricas para cards",
+            "x-prompt": "Quais métricas você quer nos cards? (formato: título, valor, ícone, cor)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "graficos"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "chartTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["barra", "pizza", "linha", "area", "donut"]
+            },
+            "description": "Tipos de gráficos",
+            "x-prompt": "Quais tipos de gráficos você quer incluir?",
+            "default": ["barra", "pizza"]
+          },
+          "chartData": {
+            "type": "string",
+            "description": "Dados para os gráficos",
+            "x-prompt": "Descreva os dados para os gráficos (categorias, valores, etc.)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "modal"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "modalType": {
+            "type": "string",
+            "enum": ["formulario", "confirmacao", "visualizacao", "upload"],
+            "description": "Tipo de modal",
+            "x-prompt": "Qual tipo de modal você quer?",
+            "default": "formulario"
+          },
+          "modalFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Campos do modal",
+            "x-prompt": "Quais campos você quer no modal?"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "formulario"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "formFields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "type": { "type": "string", "enum": ["text", "email", "number", "date", "select", "textarea", "checkbox"] },
+                "label": { "type": "string" },
+                "required": { "type": "boolean" }
+              }
+            },
+            "description": "Campos do formulário",
+            "x-prompt": "Quais campos você quer no formulário? (formato: nome, tipo, label, obrigatório)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "const": "exportacao"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exportFormats": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["excel", "pdf", "csv", "json"]
+            },
+            "description": "Formatos de exportação",
+            "x-prompt": "Quais formatos de exportação você quer?",
+            "default": ["excel", "pdf"]
+          }
+        }
+      }
+    }
+  ]
 } 
