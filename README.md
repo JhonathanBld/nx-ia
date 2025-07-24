@@ -2,6 +2,32 @@
 
 Um sistema inteligente para geração de componentes Angular que combina a velocidade do Nx com a inteligência da IA para criar telas dinâmicas e responsivas.
 
+## ⚡ Quick Start
+
+### **🚀 Setup Rápido**
+```bash
+# 1. Clone e instale
+git clone <URL_DO_REPOSITORIO>
+cd nx-ia
+npm install
+npx nx build schematics
+
+# 2. Primeiro teste
+npx nx g @usando-nx/schematics:hybrid-generator minha-primeira-tela
+npx nx serve dashboard
+```
+
+### **📋 Guias Detalhados**
+- **[SETUP.md](./SETUP.md)** - Setup completo passo a passo
+- **[COMANDOS-RAPIDOS.md](./COMANDOS-RAPIDOS.md)** - Comandos essenciais
+
+### **🎯 Navegação Rápida**
+- **🚀 Primeira vez?** → [SETUP.md](./SETUP.md)
+- **⚡ Comandos rápidos?** → [COMANDOS-RAPIDOS.md](./COMANDOS-RAPIDOS.md)
+- **📖 Documentação técnica?** → [SISTEMA-HIBRIDO-IA-NX.md](./SISTEMA-HIBRIDO-IA-NX.md)
+- **🤖 Integração IA?** → [IA-NX-INTEGRATION.md](./IA-NX-INTEGRATION.md)
+- **🔄 Migração React?** → [migration-guides/](./migration-guides/)
+
 ## 🎯 Visão Geral
 
 Este sistema oferece três geradores principais:
@@ -145,6 +171,27 @@ O sistema gera automaticamente documentação detalhada:
 - **SCSS** (estilos)
 - **RxJS** (reactive programming)
 
+## 📁 Estrutura do Projeto
+
+```
+nx-ia/
+├── 📋 Setup e Comandos
+│   ├── SETUP.md                    # Setup completo
+│   └── COMANDOS-RAPIDOS.md        # Comandos essenciais
+├── 📖 Documentação Técnica
+│   ├── SISTEMA-HIBRIDO-IA-NX.md   # Documentação técnica
+│   └── IA-NX-INTEGRATION.md       # Integração IA + Nx
+├── 📁 Documentação Gerada
+│   └── docs/                       # Análises e especificações
+├── 🔄 Guias de Migração
+│   └── migration-guides/           # React → Angular
+├── 🛠️ Código Fonte
+│   ├── apps/                       # Aplicações Angular
+│   └── libs/schematics/           # Geradores customizados
+└── 📚 Scripts e Utilitários
+    └── scripts/                    # Scripts de análise
+```
+
 ## 📁 Estrutura Gerada
 
 ```
@@ -243,12 +290,64 @@ E decide a melhor abordagem para geração.
 - [ ] Dados paginados
 - [ ] Debounce em filtros
 
-## 📚 Recursos Úteis
+## 📚 Documentação Completa
+
+### **📋 Guias de Setup e Uso**
+- **[SETUP.md](./SETUP.md)** - Guia completo de setup e configuração
+- **[COMANDOS-RAPIDOS.md](./COMANDOS-RAPIDOS.md)** - Comandos essenciais para começar rapidamente
+
+### **📖 Documentação Técnica**
+- **[SISTEMA-HIBRIDO-IA-NX.md](./SISTEMA-HIBRIDO-IA-NX.md)** - Documentação técnica completa do sistema
+- **[IA-NX-INTEGRATION.md](./IA-NX-INTEGRATION.md)** - Guia de integração IA + Nx
+
+### **📁 Documentação Gerada**
+- **[docs/](./docs/)** - Documentação automática gerada pelos geradores
+  - `*-analysis.md` - Análise de prompts e recomendações
+  - `*-detailed-spec.md` - Especificações detalhadas para IA/Copilot
+
+### **🔄 Guias de Migração**
+- **[migration-guides/](./migration-guides/)** - Guias para migração React → Angular
+  - [README.md](./migration-guides/README.md) - Visão geral da migração
+  - [component-patterns.md](./migration-guides/component-patterns.md) - Padrões de componentes
+  - [forms.md](./migration-guides/forms.md) - Migração de formulários
+  - [routing.md](./migration-guides/routing.md) - Migração de rotas
+  - [state-management.md](./migration-guides/state-management.md) - Gerenciamento de estado
+  - [testing.md](./migration-guides/testing.md) - Testes
+
+### **📖 Documentação Adicional**
+- **[EXEMPLO-DETALHADO.md](./EXEMPLO-DETALHADO.md)** - Exemplo detalhado de uso
+- **[EXEMPLOS-USO-IA-NX.md](./EXEMPLOS-USO-IA-NX.md)** - Exemplos práticos de uso
+
+## 🎯 Benefícios do Sistema
+
+### **✅ Para Desenvolvedores**
+- **Geração rápida** de telas com comandos simples
+- **Decisão inteligente** entre Nx e IA automaticamente
+- **Documentação automática** para cada componente gerado
+- **Features dinâmicas** baseadas na seleção do usuário
+- **Templates otimizados** com imports apenas necessários
+
+### **✅ Para Projetos**
+- **Consistência** visual e de código
+- **Padrões estabelecidos** seguindo Angular Material
+- **Manutenibilidade** com estrutura padronizada
+- **Escalabilidade** com monorepo Nx
+- **Performance** otimizada
+
+### **✅ Para IA/Copilot**
+- **Contexto claro** com documentação detalhada
+- **Especificações precisas** para implementação
+- **Exemplos concretos** de código
+- **Checklist de qualidade** para validação
+- **Recursos úteis** para desenvolvimento
+
+## 🔗 Recursos Externos
 
 - **Angular Material**: https://material.angular.io/
 - **Angular Docs**: https://angular.io/docs
 - **TypeScript**: https://www.typescriptlang.org/docs/
 - **RxJS**: https://rxjs.dev/guide/overview
+- **Nx Documentation**: https://nx.dev/
 
 ---
 
