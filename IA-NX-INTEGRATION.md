@@ -1,258 +1,233 @@
-# 🤖 IA + Nx Integration Guide
+# 🤖 Integração IA + Nx - Guia Completo
 
-## 🎯 **Objetivo**
-Integrar IA (Copilot/Cursor) com Nx para geração e migração automática de telas Angular, seguindo padrões empresariais.
+## 🎯 Visão Geral
 
----
+Este documento descreve a integração inteligente entre IA (Inteligência Artificial) e Nx para geração de componentes Angular. O sistema decide automaticamente quando usar cada abordagem baseado na complexidade do prompt e features selecionadas.
 
-## 🚀 **1. Geração de Telas com IA**
+## 🛠️ Geradores Disponíveis
 
-### **Comando Básico:**
+### 1. Hybrid Generator (`@usando-nx/schematics:hybrid-generator`)
+
+O gerador mais inteligente que decide automaticamente entre IA e Nx.
+
+#### Comandos Básicos:
 ```bash
-npx nx g ./dist/libs/schematics:ai-generate-screen <nome-da-tela> --prompt="<descrição detalhada>"
+# Geração automática (recomendado)
+npx nx g @usando-nx/schematics:hybrid-generator nome-da-tela
+
+# Forçar uso da IA
+npx nx g @usando-nx/schematics:hybrid-generator nome-da-tela --forceAI=true
+
+# Forçar uso do Nx
+npx nx g @usando-nx/schematics:hybrid-generator nome-da-tela --forceNx=true
 ```
 
-### **Exemplos de Uso:**
+#### Features Disponíveis:
+- **filtros** - Filtros avançados com busca
+- **tabela** - Tabela dinâmica com paginação
+- **acoes** - Botões de ação (CRUD)
+- **cards** - Cards de métricas
+- **graficos** - Gráficos interativos
+- **modal** - Modais inteligentes
+- **formulario** - Formulários reativos
+- **exportacao** - Exportação de dados
+- **responsivo** - Layout responsivo
 
-#### **Exemplo 1: Tela de Consulta de Produtos**
+### 2. Generate Screen (`@usando-nx/schematics:generate-screen`)
+
+Gerador baseado em features que sempre usa Nx.
+
+#### Comandos:
 ```bash
-npx nx g ./dist/libs/schematics:ai-generate-screen ConsultaProdutos \
-  --prompt="Gere uma tela Angular padrão com:
-  - Filtros: Nome, Categoria, Preço
-  - Tabela com colunas: Código, Nome, Categoria, Preço, Estoque, Ativo
-  - Ações: Editar, Excluir, Visualizar
-  - Botão de cadastro
-  - Paginação
-  - Deve usar Angular Material"
+# Geração básica
+npx nx g @usando-nx/schematics:generate-screen nome-da-tela
+
+# Com features específicas
+npx nx g @usando-nx/schematics:generate-screen produtos --features="filtros,tabela,acoes"
+
+# Com documentação automática
+npx nx g @usando-nx/schematics:generate-screen usuarios --generateDocs=true
 ```
 
-#### **Exemplo 2: Tela de Gerenciamento de Usuários**
+### 3. AI Generate Screen (`@usando-nx/schematics:ai-generate-screen`)
+
+Gerador totalmente baseado em IA.
+
+#### Comandos:
 ```bash
-npx nx g ./dist/libs/schematics:ai-generate-screen GerenciamentoUsuarios \
-  --prompt="Crie uma tela de gerenciamento de usuários com:
-  - Filtros: Nome, Email, Status, Departamento
-  - Tabela: ID, Nome, Email, Departamento, Status, Data Cadastro
-  - Ações: Editar, Excluir, Ativar/Desativar
-  - Modal de criação/edição
-  - Exportação para Excel"
+# Geração com IA
+npx nx g @usando-nx/schematics:ai-generate-screen nome-da-tela --prompt="Dashboard com cards de métricas, gráficos de vendas e filtros avançados"
+
+# Com projeto específico
+npx nx g @usando-nx/schematics:ai-generate-screen dashboard --project=dashboard --prompt="Tela de dashboard com cards de métricas principais"
 ```
 
-#### **Exemplo 3: Dashboard de Relatórios**
+## 🎯 Lógica de Decisão
+
+### Quando Usar IA:
+- Features avançadas (cards, gráficos, modal, exportação, responsivo)
+- Muitas features básicas (>3)
+- `forceAI=true` explicitamente
+- Prompt detalhado fornecido
+
+### Quando Usar Nx:
+- Features básicas (filtros, tabela, ações, formulário)
+- Poucas features (<3)
+- `forceNx=true` explicitamente
+- Geração rápida necessária
+
+## 📊 Exemplos Práticos
+
+### Dashboard de Vendas
 ```bash
-npx nx g ./dist/libs/schematics:ai-generate-screen DashboardRelatorios \
-  --prompt="Dashboard com:
-  - Cards de métricas (Vendas, Usuários, Produtos)
-  - Gráficos de barras e pizza
-  - Filtros por período
-  - Exportação de relatórios
-  - Responsivo"
+npx nx g @usando-nx/schematics:hybrid-generator dashboard-vendas \
+  --features="cards,graficos,filtros,tabela" \
+  --forceAI=true
 ```
 
-### **Parâmetros Disponíveis:**
-- `--name`: Nome da tela
-- `--project`: Projeto destino (default: dashboard)
-- `--prompt`: Descrição detalhada da tela
-- `--features`: Lista de features (filtros, tabela, modal, etc.)
-- `--columns`: Colunas da tabela
-- `--filters`: Filtros disponíveis
-- `--actions`: Ações disponíveis
-
----
-
-## 🔄 **2. Migração React → Angular**
-
-### **Comando Básico:**
+### Gerenciamento de Usuários
 ```bash
-npx nx g ./dist/libs/schematics:migrate-react <nome-componente> --reactFile="<caminho-arquivo-react>"
+npx nx g @usando-nx/schematics:generate-screen usuarios \
+  --features="filtros,tabela,acoes,modal" \
+  --generateDocs=true
 ```
 
-### **Exemplos de Migração:**
-
-#### **Exemplo 1: Migrar ProductTable.jsx**
+### Relatório Avançado
 ```bash
-npx nx g ./dist/libs/schematics:migrate-react ProductTable \
-  --reactFile="src/components/ProductTable.jsx" \
-  --features="hooks,styled-components,props" \
-  --targetFramework="standalone"
+npx nx g @usando-nx/schematics:ai-generate-screen relatorio-vendas \
+  --prompt="Relatório de vendas com gráficos de barras, cards de métricas principais, filtros por período e exportação para Excel"
 ```
 
-#### **Exemplo 2: Migrar UserForm.tsx**
-```bash
-npx nx g ./dist/libs/schematics:migrate-react UserForm \
-  --reactFile="src/forms/UserForm.tsx" \
-  --features="formik,validation,styled-components" \
-  --targetFramework="standalone"
-```
+## 🎨 Features Dinâmicas
 
-### **O que a IA faz automaticamente:**
+### Filtros Avançados
+- Painel expansível
+- Busca em tempo real
+- Datepicker para períodos
+- Selects múltiplos
+- Chips para seleção
 
-1. **Análise do código React:**
-   - Detecta hooks (useState, useEffect, etc.)
-   - Identifica styled-components
-   - Extrai props e interfaces
-   - Mapeia event handlers
-
-2. **Conversão para Angular:**
-   - Converte JSX para template HTML
-   - Transforma hooks em lifecycle hooks
-   - Converte styled-components para SCSS
-   - Mapeia props para @Input/@Output
-
-3. **Aplicação de padrões:**
-   - Usa Angular Material
-   - Segue estrutura Nx
-   - Implementa reactive forms
-   - Adiciona ao menu do shell
-
----
-
-## 🎨 **3. Padrões de Prompt para IA**
-
-### **Estrutura Recomendada:**
-```
-Gere uma tela Angular com:
-- Nome: [Nome da Tela]
-- Filtros: [lista de filtros]
-- Tabela: [colunas da tabela]
-- Ações: [ações disponíveis]
-- Features especiais: [modais, gráficos, etc.]
-- Framework: [Angular Material, Bootstrap, etc.]
-```
-
-### **Exemplos de Prompts Estruturados:**
-
-#### **Tela CRUD Completa:**
-```
-Gere uma tela Angular padrão com:
-- Nome: GerenciamentoProdutos
-- Filtros: Nome, Categoria, Preço, Status
-- Tabela: ID, Nome, Categoria, Preço, Estoque, Status, Ações
-- Ações: Visualizar, Editar, Excluir, Ativar/Desativar
-- Modal de criação/edição com validação
+### Tabela Dinâmica
+- Ordenação por colunas
 - Paginação
-- Exportação para Excel
-- Deve usar Angular Material
-- Responsivo
+- Ações por linha
+- Seleção múltipla
+- Dados simulados realistas
+
+### Cards de Métricas
+- Grid responsivo
+- Ícones dinâmicos
+- Cores temáticas
+- Animações suaves
+
+### Gráficos Interativos
+- Tipos: Barra, Pizza, Linha, Área, Donut
+- Interatividade (hover, click)
+- Responsividade
+- Legendas dinâmicas
+
+### Modais Inteligentes
+- Formulários reativos
+- Validação em tempo real
+- Upload de arquivos
+- Confirmações
+- Animações suaves
+
+## 📚 Documentação Automática
+
+O sistema gera automaticamente documentação detalhada:
+
+### Documentação Básica
+- Análise do prompt
+- Features selecionadas
+- Configurações específicas
+- Recomendações
+- Estatísticas
+
+### Documentação para IA/Copilot
+- Especificações técnicas detalhadas
+- Instruções de implementação
+- Checklist de qualidade
+- Comandos de desenvolvimento
+- Recursos úteis
+
+## 🔧 Tecnologias Suportadas
+
+- **Angular 17+** (standalone components)
+- **Angular Material** (UI components)
+- **TypeScript** (tipagem forte)
+- **SCSS** (estilos)
+- **RxJS** (reactive programming)
+
+## 📁 Estrutura Gerada
+
+```
+apps/dashboard/src/app/nome-da-tela/
+├── nome-da-tela.component.ts      # Lógica principal
+├── nome-da-tela.component.html    # Template
+├── nome-da-tela.component.scss    # Estilos
+└── nome-da-tela.component.spec.ts # Testes
 ```
 
-#### **Dashboard com Gráficos:**
-```
-Crie um dashboard Angular com:
-- Nome: DashboardVendas
-- Cards de métricas: Total Vendas, Vendas Hoje, Produtos Vendidos
-- Gráfico de barras: Vendas por mês
-- Gráfico de pizza: Vendas por categoria
-- Filtros: Período, Categoria, Vendedor
-- Exportação de relatórios
-- Usar Chart.js ou ng2-charts
-- Responsivo
-```
+## 🚀 Comandos de Desenvolvimento
 
----
-
-## 🔧 **4. Configuração Avançada**
-
-### **Personalizar Templates:**
-Edite os arquivos em `libs/schematics/src/generators/ai-generate-screen/files/` para customizar a geração.
-
-### **Adicionar Novos Padrões:**
-1. Crie novos templates em `files/`
-2. Atualize o generator para usar os novos templates
-3. Adicione novos mapeamentos de ícones e nomes
-
-### **Integrar com Copilot/Cursor:**
 ```bash
-# Comando para usar com IA
-npx nx g ./dist/libs/schematics:ai-generate-screen $(echo "Nome da tela baseado no prompt da IA")
+# Servir aplicação
+npx nx serve dashboard
+
+# Testar componente
+npx nx test dashboard
+
+# Build do projeto
+npx nx build dashboard
+
+# Lint do código
+npx nx lint dashboard
 ```
 
----
+## 🔍 Análise Inteligente
 
-## 📋 **5. Checklist de Migração React → Angular**
+O sistema analisa automaticamente:
+- Features selecionadas
+- Complexidade do prompt
+- Configurações específicas
+- Contexto do projeto
 
-### **Antes da Migração:**
-- [ ] Analisar dependências React
-- [ ] Identificar hooks utilizados
-- [ ] Mapear styled-components
-- [ ] Verificar event handlers
-- [ ] Documentar props e interfaces
+E decide a melhor abordagem para geração.
 
-### **Durante a Migração:**
-- [ ] Converter JSX para template HTML
-- [ ] Transformar hooks em lifecycle hooks
-- [ ] Converter styled-components para SCSS
-- [ ] Mapear props para @Input/@Output
-- [ ] Adaptar event handlers
+## 📋 Checklist de Qualidade
 
-### **Após a Migração:**
-- [ ] Testar funcionalidades
-- [ ] Verificar responsividade
-- [ ] Validar padrões Angular
-- [ ] Atualizar documentação
-- [ ] Adicionar ao menu do shell
+### Funcionalidade
+- [ ] Todas as features implementadas
+- [ ] Dados simulados funcionais
+- [ ] Validações implementadas
+- [ ] Responsividade testada
 
----
+### Código
+- [ ] TypeScript com tipos corretos
+- [ ] Imports otimizados
+- [ ] Métodos bem estruturados
+- [ ] Nomenclatura consistente
 
-## 🚀 **6. Comandos Rápidos**
+### UI/UX
+- [ ] Design moderno
+- [ ] Animações suaves
+- [ ] Feedback visual
+- [ ] Acessibilidade
 
-### **Geração de Telas:**
-```bash
-# Tela básica
-npx nx g ./dist/libs/schematics:ai-generate-screen MinhaTela --prompt="Tela simples com tabela"
+### Performance
+- [ ] Lazy loading quando apropriado
+- [ ] Otimização de imports
+- [ ] Dados paginados
+- [ ] Debounce em filtros
 
-# Tela completa
-npx nx g ./dist/libs/schematics:ai-generate-screen TelaCompleta --prompt="CRUD completo com filtros, tabela, modal e paginação"
+## 📚 Recursos Úteis
 
-# Dashboard
-npx nx g ./dist/libs/schematics:ai-generate-screen Dashboard --prompt="Dashboard com cards, gráficos e filtros"
-```
-
-### **Migração:**
-```bash
-# Migração simples
-npx nx g ./dist/libs/schematics:migrate-react MeuComponente --reactFile="src/MeuComponente.jsx"
-
-# Migração com features específicas
-npx nx g ./dist/libs/schematics:migrate-react ComponenteComplexo --reactFile="src/ComponenteComplexo.tsx" --features="hooks,styled-components,formik"
-```
+- **Angular Material**: https://material.angular.io/
+- **Angular Docs**: https://angular.io/docs
+- **TypeScript**: https://www.typescriptlang.org/docs/
+- **RxJS**: https://rxjs.dev/guide/overview
 
 ---
 
-## 🎯 **7. Benefícios da Integração**
-
-### **Produtividade:**
-- ✅ Geração automática de telas
-- ✅ Migração rápida React → Angular
-- ✅ Padrões consistentes
-- ✅ Menos código repetitivo
-
-### **Qualidade:**
-- ✅ Seguimento de padrões empresariais
-- ✅ Uso de Angular Material
-- ✅ Estrutura Nx otimizada
-- ✅ Componentes reutilizáveis
-
-### **Manutenibilidade:**
-- ✅ Código padronizado
-- ✅ Estrutura consistente
-- ✅ Fácil atualização
-- ✅ Documentação automática
-
----
-
-## 📚 **8. Recursos Adicionais**
-
-### **Documentação:**
-- [Angular Material](https://material.angular.io/)
-- [Nx Documentation](https://nx.dev/)
-- [Angular Standalone Components](https://angular.io/guide/standalone-components)
-
-### **Ferramentas:**
-- **Copilot**: Para geração de código
-- **Cursor**: Para análise e migração
-- **Nx**: Para estrutura e organização
-- **Angular Material**: Para componentes UI
-
----
-
-**🎉 Agora você tem um sistema completo de IA + Nx para desenvolvimento Angular!** 
+*Integração IA + Nx - Geração Inteligente de Componentes Angular* 
