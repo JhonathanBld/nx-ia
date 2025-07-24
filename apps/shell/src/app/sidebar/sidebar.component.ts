@@ -249,6 +249,11 @@ interface MenuItem {
                 <mat-icon matListItemIcon>list</mat-icon>
                 <span matListItemTitle>dashboard-financeiro</span>
               </a>
+
+              <a mat-list-item routerLink="/dashboard/teste-simples" routerLinkActive="active-link">
+                <mat-icon matListItemIcon>list</mat-icon>
+                <span matListItemTitle>teste-simples</span>
+              </a>
             </mat-nav-list>
           </mat-expansion-panel>
 
